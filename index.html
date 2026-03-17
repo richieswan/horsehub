@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HorseHub — Race. Predict. Dominate.</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Exo+2:wght@300;400;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg0:#05050e;--bg1:#0a0a1a;--bg2:#111126;--bg3:#181835;--bg4:#1f1f42;
+  --gold:#f0c040;--gold2:#ffe566;--gold3:#a07820;--goldglow:rgba(240,192,64,.14);
+  --green:#22c55e;--red:#ef4444;--blue:#3b82f6;--purple:#a855f7;
+  --t1:#f0ead0;--t2:#9a8f6e;--t3:#5a5240;
+  --bdr:rgba(240,192,64,.12);--bdr2:rgba(240,192,64,.32);
+  --ff:'Cinzel',serif;--fu:'Exo 2',sans-serif;--fs:'Barlow Condensed',sans-serif;
+  --r1:6px;--r2:12px;--r3:20px;--r4:28px;
+  --tr:.22s cubic-bezier(.4,0,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scrollbar-width:thin;scrollbar-color:var(--gold3) var(--bg1)}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg1)}::-webkit-scrollbar-thumb{background:var(--gold3);border-radius:3px}
+body{font-family:var(--fu);background:var(--bg0);color:var(--t1);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(240,192,64,.01) 60px,rgba(240,192,64,.01) 61px),repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(240,192,64,.01) 60px,rgba(240,192,64,.01) 61px);pointer-events:none;z-index:0}
+#app{position:relative;z-index:1}
+
+/* ── Buttons ─────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 22px;border-radius:var(--r2);border:1.5px solid transparent;font-family:var(--fs);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:var(--tr);position:relative;overflow:hidden;white-space:nowrap;text-decoration:none}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.38;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.btn-gold{background:linear-gradient(135deg,#f0c040,#c89010);color:#0a0800;border-color:#f0c040;box-shadow:0 4px 18px rgba(240,192,64,.3)}
+.btn-gold:hover:not(:disabled){box-shadow:0 6px 26px rgba(240,192,64,.5);transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--gold);border-color:var(--gold3)}
+.btn-outline:hover{border-color:var(--gold);background:var(--goldglow)}
+.btn-ghost{background:rgba(255,255,255,.05);color:var(--t2);border-color:var(--bdr)}
+.btn-ghost:hover{color:var(--t1);border-color:var(--bdr2)}
+.btn-red{background:rgba(239,68,68,.14);color:var(--red);border-color:rgba(239,68,68,.35)}
+.btn-red:hover{background:rgba(239,68,68,.24)}
+.btn-sm{padding:7px 14px;font-size:11px}
+.btn-lg{padding:15px 30px;font-size:15px}
+
+/* ── Cards ───────────────────────────────────── */
+.card{background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r3);padding:22px}
+.card-hi{background:var(--bg4);border-color:rgba(240,192,64,.22)}
+.card:hover{border-color:var(--bdr2)}
+
+/* ── Badge / Rarity ──────────────────────────── */
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-family:var(--fs);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.b-common{background:rgba(156,163,175,.14);color:#9ca3af;border:1px solid rgba(156,163,175,.22)}
+.b-rare{background:rgba(59,130,246,.14);color:#60a5fa;border:1px solid rgba(59,130,246,.28)}
+.b-epic{background:rgba(168,85,247,.14);color:#c084fc;border:1px solid rgba(168,85,247,.28)}
+.b-legendary{background:rgba(240,192,64,.14);color:var(--gold);border:1px solid rgba(240,192,64,.38);animation:legpulse 2s ease-in-out infinite}
+.b-easy{background:rgba(59,130,246,.14);color:#60a5fa;border:1px solid rgba(59,130,246,.28)}
+.b-hard{background:rgba(168,85,247,.14);color:#c084fc;border:1px solid rgba(168,85,247,.28)}
+@keyframes legpulse{0%,100%{box-shadow:0 0 6px rgba(240,192,64,.2)}50%{box-shadow:0 0 14px rgba(240,192,64,.5)}}
+
+/* ── Stat bar ────────────────────────────────── */
+.sbar-wrap{display:flex;flex-direction:column;gap:4px}
+.sbar-row{display:flex;align-items:center;gap:8px}
+.sbar-lbl{font-family:var(--fs);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--t2);width:30px;flex-shrink:0}
+.sbar-track{flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden}
+.sbar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold3),var(--gold));transition:width .9s cubic-bezier(.4,0,.2,1)}
+.sbar-val{font-family:var(--fs);font-size:11px;font-weight:700;color:var(--t2);width:22px;text-align:right}
+
+/* ── Navbar ──────────────────────────────────── */
+#navbar{position:sticky;top:0;z-index:100;background:rgba(5,5,14,.93);backdrop-filter:blur(18px);border-bottom:1px solid var(--bdr)}
+.nav-inner{max-width:1180px;margin:0 auto;padding:0 18px;height:62px;display:flex;align-items:center;gap:24px}
+.nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0}
+.nav-logo-icon{font-size:22px}
+.nav-logo-text{font-family:var(--ff);font-size:19px;font-weight:700;color:var(--gold);letter-spacing:.04em}
+.nav-links{list-style:none;display:flex;align-items:center;gap:3px;flex:1}
+.nav-link{display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:var(--r2);text-decoration:none;color:var(--t2);font-family:var(--fs);font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;transition:var(--tr);border:1px solid transparent;cursor:pointer;background:none}
+.nav-link:hover{color:var(--t1);background:rgba(240,192,64,.06)}
+.nav-link.active{color:var(--gold);background:rgba(240,192,64,.1);border-color:rgba(240,192,64,.2)}
+.nav-user{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.nav-coins{display:flex;align-items:center;gap:5px;background:rgba(240,192,64,.1);border:1px solid rgba(240,192,64,.24);border-radius:100px;padding:5px 13px;font-family:var(--fs);font-weight:700;font-size:13px;color:var(--gold)}
+.nav-pill{background:var(--bg3);border:1px solid var(--bdr);border-radius:100px;padding:5px 11px;font-family:var(--fs);font-size:12px;color:var(--t2)}
+@media(max-width:760px){.nav-links{display:none}.nav-user .nav-pill{display:none}}
+
+/* ── Page ────────────────────────────────────── */
+.pg{max-width:1180px;margin:0 auto;padding:24px 18px 90px;animation:fadeup .45s ease both}
+.ph{margin-bottom:28px}
+.ph h1{font-family:var(--ff);font-size:clamp(22px,3.5vw,32px);color:var(--gold);margin-bottom:5px}
+.ph p{color:var(--t2);font-family:var(--fs);font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+
+/* ── Animations ──────────────────────────────── */
+@keyframes fadeup{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes scalein{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pulsgold{0%,100%{opacity:1}50%{opacity:.55}}
+@keyframes shimmer{from{background-position:-200% center}to{background-position:200% center}}
+@keyframes conffall{0%{transform:translateY(-10px) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+.anim-up{animation:fadeup .45s ease both}
+.anim-in{animation:fadein .35s ease both}
+.anim-scale{animation:scalein .32s ease both}
+.anim-float{animation:float 3s ease-in-out infinite}
+
+/* ── Welcome ─────────────────────────────────── */
+#welcome{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 18px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 0%,rgba(240,192,64,.07),transparent 55%)}
+.wc{max-width:520px;width:100%;display:flex;flex-direction:column;align-items:center;gap:36px;animation:fadeup .6s ease}
+.wlogo h1{font-family:var(--ff);font-size:clamp(40px,8vw,62px);font-weight:900;background:linear-gradient(135deg,#ffe566,#f0c040,#c89010);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:.04em;text-align:center;margin-bottom:8px}
+.wlogo p{font-family:var(--fs);font-size:12px;letter-spacing:.24em;color:var(--t3);text-transform:uppercase;text-align:center}
+.wfeats{width:100%;display:flex;flex-direction:column;gap:9px}
+.wfeat{display:flex;align-items:center;gap:13px;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r2);padding:11px 15px;font-family:var(--fs);font-size:13px;color:var(--t2);animation:fadeup .5s ease both}
+.wfeat span:first-child{font-size:19px;flex-shrink:0}
+.wreg{width:100%;display:flex;flex-direction:column;gap:11px}
+.wreg label{font-family:var(--fs);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--t2)}
+.winput-row{display:flex;gap:10px}
+.winput{flex:1;background:var(--bg3);border:1.5px solid var(--bdr2);border-radius:var(--r2);padding:13px 17px;font-family:var(--fu);font-size:15px;color:var(--t1);outline:none;transition:var(--tr)}
+.winput::placeholder{color:var(--t3)}
+.winput:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(240,192,64,.1)}
+.wreg-hint{font-family:var(--fs);font-size:12px;color:var(--t3);text-align:center}
+@media(max-width:480px){.winput-row{flex-direction:column}}
+
+/* ── Home ────────────────────────────────────── */
+.hero{background:linear-gradient(135deg,var(--bg3),var(--bg4));border:1px solid var(--bdr);border-radius:var(--r4);padding:26px;margin-bottom:28px}
+.hero-top{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.hero-top .emoji{font-size:44px;animation:float 3s ease-in-out infinite}
+.hero-name{font-family:var(--ff);font-size:clamp(18px,3vw,26px);margin-bottom:3px}
+.hero-name span{color:var(--gold)}
+.hero-sub{color:var(--t2);font-family:var(--fs);font-size:12px;letter-spacing:.05em}
+.stats-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.stat-box{flex:1;min-width:72px;background:rgba(255,255,255,.03);border:1px solid var(--bdr);border-radius:var(--r2);padding:11px;text-align:center}
+.stat-box-v{font-family:var(--fs);font-size:20px;font-weight:700;color:var(--t1);line-height:1;margin-bottom:3px}
+.stat-box-v.gold{color:var(--gold)}
+.stat-box-l{font-family:var(--fs);font-size:10px;letter-spacing:.06em;color:var(--t3);text-transform:uppercase}
+.xp-bar-wrap{display:flex;flex-direction:column;gap:7px}
+.xp-bar-info{display:flex;justify-content:space-between;font-family:var(--fs);font-size:12px;font-weight:700;color:var(--gold)}
+.xp-bar-info span:last-child{color:var(--t3);font-weight:400}
+.xp-track{height:7px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--gold3),var(--gold2));border-radius:4px;transition:width 1.1s cubic-bezier(.4,0,.2,1)}
+.section{margin-bottom:28px}
+.section h2{font-family:var(--ff);font-size:19px;color:var(--t1);margin-bottom:14px}
+.section-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.section-hdr h2{margin-bottom:0}
+.see-all{font-family:var(--fs);font-size:12px;color:var(--gold3);text-decoration:none;cursor:pointer;letter-spacing:.06em;background:none;border:none}
+.see-all:hover{color:var(--gold)}
+.actions-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
+@media(min-width:600px){.actions-grid{grid-template-columns:repeat(4,1fr)}}
+.action-card{display:flex;flex-direction:column;align-items:center;gap:9px;text-align:center;padding:19px 12px;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r3);cursor:pointer;transition:var(--tr);position:relative;overflow:hidden}
+.action-card:hover{border-color:var(--bdr2);transform:translateY(-3px);background:var(--bg4)}
+.action-card.gold-action{border-color:rgba(240,192,64,.32);background:linear-gradient(135deg,rgba(240,192,64,.07),var(--bg3));box-shadow:0 0 18px rgba(240,192,64,.09)}
+.action-card.gold-action::before{content:'TODAY';position:absolute;top:7px;right:-18px;background:var(--gold);color:#0a0800;font-family:var(--fs);font-size:8px;font-weight:800;letter-spacing:.1em;padding:2px 26px;transform:rotate(28deg)}
+.action-icon{font-size:30px}
+.action-lbl{font-family:var(--fs);font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.action-sub{font-family:var(--fs);font-size:11px;color:var(--t3)}
+.daily-preview{margin-bottom:18px}
+.dp-hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:16px;flex-wrap:wrap}
+.dp-name{font-family:var(--ff);font-size:16px;color:var(--gold);margin-bottom:7px}
+.dp-meta{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--fs);font-size:12px;color:var(--t2)}
+.dp-horses{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+@media(min-width:480px){.dp-horses{grid-template-columns:repeat(4,1fr)}}
+.dp-horse{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.03);border:1px solid var(--bdr);border-radius:var(--r2);padding:9px 11px}
+.dp-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.dp-hn{font-family:var(--fs);font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dp-odds{font-family:var(--fs);font-size:11px;color:var(--t3)}
+.done-badge{background:rgba(34,197,94,.14);border:1px solid rgba(34,197,94,.35);color:var(--green);border-radius:100px;padding:6px 15px;font-family:var(--fs);font-size:12px;font-weight:700;flex-shrink:0}
+.mini-lb{display:flex;flex-direction:column;padding:0;overflow:hidden}
+.mlb-row{display:flex;align-items:center;gap:13px;padding:13px 19px;border-bottom:1px solid var(--bdr);font-family:var(--fs);font-size:13px;transition:var(--tr)}
+.mlb-row:last-child{border-bottom:none}
+.mlb-row:hover{background:rgba(255,255,255,.02)}
+.mlb-row.me{background:rgba(240,192,64,.06)}
+.mlb-rank{font-size:18px;width:28px}
+.mlb-name{flex:1;font-weight:700;color:var(--t1)}
+.mlb-coins{color:var(--gold);font-weight:700}
+.mlb-str{color:var(--t3);min-width:44px;text-align:right}
+
+/* ── Challenge ───────────────────────────────── */
+.race-hdr{margin-bottom:24px}
+.race-flags{display:flex;gap:7px;margin-bottom:11px}
+.race-title{font-family:var(--ff);font-size:clamp(18px,3vw,28px);color:var(--gold);margin-bottom:12px}
+.race-meta-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:7px 18px;margin-bottom:12px}
+.race-meta-item{display:flex;align-items:center;gap:7px;font-family:var(--fs);font-size:12px;color:var(--t2)}
+.race-desc{font-family:var(--fs);font-size:13px;color:var(--t2);font-style:italic;border-left:3px solid var(--gold3);padding-left:12px;margin-top:9px}
+.diff-hint{background:rgba(240,192,64,.06);border:1px solid rgba(240,192,64,.18);border-radius:var(--r2);padding:9px 14px;font-family:var(--fs);font-size:12px;color:var(--t2);margin-top:11px}
+.pick-title{font-family:var(--ff);font-size:18px;color:var(--t1);margin-bottom:18px}
+.horses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin-bottom:24px}
+@media(max-width:540px){.horses-grid{grid-template-columns:1fr}}
+.hpc{background:var(--bg3);border:2px solid var(--bdr);border-radius:var(--r4);padding:17px;cursor:pointer;transition:var(--tr);position:relative;overflow:hidden;animation:fadeup .4s ease both}
+.hpc::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,var(--hc,var(--gold)),transparent 55%);opacity:0;transition:var(--tr);pointer-events:none}
+.hpc:hover{border-color:var(--bdr2);transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,.4)}
+.hpc:hover::after{opacity:.06}
+.hpc.selected{border-color:var(--gold);background:var(--bg4);box-shadow:0 0 0 3px rgba(240,192,64,.18),0 12px 28px rgba(0,0,0,.4)}
+.hpc.selected::after{opacity:.08}
+.hpc-top{display:flex;align-items:center;gap:9px;margin-bottom:13px}
+.hpc-bar{width:4px;height:30px;border-radius:2px;background:var(--hc,var(--gold));flex-shrink:0}
+.hpc-num{font-family:var(--fs);font-size:12px;color:var(--t3);font-weight:700;letter-spacing:.06em}
+.hpc-fav{background:rgba(240,192,64,.14);border:1px solid rgba(240,192,64,.32);color:var(--gold);border-radius:100px;padding:2px 9px;font-family:var(--fs);font-size:10px;font-weight:700}
+.hpc-sel-mark{margin-left:auto;width:26px;height:26px;background:var(--gold);color:#0a0800;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800}
+.hpc-name{font-family:var(--ff);font-size:16px;color:var(--t1);margin-bottom:5px;line-height:1.3}
+.hpc-jock,.hpc-wt{font-family:var(--fs);font-size:11px;color:var(--t3);margin-bottom:2px}
+.hpc-odds-block{text-align:center;background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:var(--r2);padding:9px;margin:12px 0}
+.hpc-odds{font-family:var(--fs);font-size:24px;font-weight:800;color:var(--gold);line-height:1}
+.hpc-odds-lbl{font-family:var(--fs);font-size:9px;letter-spacing:.12em;color:var(--t3);text-transform:uppercase;margin-top:2px}
+.form-lbl{font-family:var(--fs);font-size:10px;letter-spacing:.1em;color:var(--t3);text-transform:uppercase;margin-bottom:6px}
+.form-pills{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px}
+.fp{padding:3px 8px;border-radius:4px;font-family:var(--fs);font-size:10px;font-weight:700;border:1px solid transparent}
+.fp.w{background:rgba(34,197,94,.14);color:var(--green);border-color:rgba(34,197,94,.28)}
+.fp.p{background:rgba(240,192,64,.11);color:var(--gold);border-color:rgba(240,192,64,.24)}
+.fp.o{background:rgba(255,255,255,.05);color:var(--t3)}
+.pick-submit{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r3);padding:18px 22px}
+.pick-hint{font-family:var(--fs);font-size:13px;color:var(--t2)}
+.pick-hint strong{color:var(--gold)}
+/* Result */
+.result-wrap{display:flex;flex-direction:column;gap:22px;animation:fadein .4s ease}
+.result-banner{border-radius:var(--r4);padding:30px;text-align:center;animation:scalein .4s ease}
+.result-banner.c{background:linear-gradient(135deg,rgba(34,197,94,.14),rgba(34,197,94,.04));border:2px solid rgba(34,197,94,.38)}
+.result-banner.w{background:linear-gradient(135deg,rgba(239,68,68,.11),rgba(239,68,68,.03));border:2px solid rgba(239,68,68,.28)}
+.result-banner.n{background:var(--bg3);border:1px solid var(--bdr)}
+.result-emoji{font-size:52px;margin-bottom:11px;animation:float 2s ease-in-out infinite}
+.result-text{font-family:var(--ff);font-size:clamp(20px,3.5vw,30px);margin-bottom:7px}
+.result-sub{font-family:var(--fs);font-size:14px;color:var(--t2)}
+.winner-title{font-family:var(--ff);font-size:20px;color:var(--gold);margin-bottom:14px}
+.winner-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:11px}
+.wh-card{background:var(--bg3);border:1.5px solid var(--bdr);border-radius:var(--r3);padding:15px;text-align:center;position:relative;animation:fadeup .4s ease both;transition:var(--tr)}
+.wh-card.winner{border-color:var(--gold);background:var(--bg4);box-shadow:0 0 20px rgba(240,192,64,.14)}
+.wh-card.wrong{opacity:.56;border-color:rgba(239,68,68,.28)}
+.wh-dot{width:32px;height:32px;border-radius:50%;margin:0 auto 9px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.wh-name{font-family:var(--ff);font-size:13px;margin-bottom:3px}
+.wh-jock,.wh-odds{font-family:var(--fs);font-size:11px;color:var(--t3)}
+.wh-winner-details{display:flex;justify-content:center;gap:11px;margin-top:7px;font-family:var(--fs);font-size:11px;color:var(--t2)}
+.crown-tag{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--gold);color:#0a0800;font-family:var(--fs);font-size:9px;font-weight:800;letter-spacing:.08em;padding:2px 11px;border-radius:100px;white-space:nowrap}
+.pick-tag{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:#b91c1c;color:#fff;font-family:var(--fs);font-size:9px;font-weight:800;letter-spacing:.08em;padding:2px 11px;border-radius:100px;white-space:nowrap}
+.placements{padding:0;overflow:hidden}
+.plc-title{font-family:var(--ff);font-size:17px;color:var(--t1);padding:15px 19px;border-bottom:1px solid var(--bdr)}
+.plc-row{display:flex;align-items:center;gap:13px;padding:11px 19px;border-bottom:1px solid var(--bdr);font-family:var(--fs)}
+.plc-row:last-child{border-bottom:none}
+.plc-pos{width:56px;font-weight:700;color:var(--gold);font-size:13px}
+.plc-name{flex:1;color:var(--t1);font-size:13px;font-weight:600}
+.plc-jock{color:var(--t3);font-size:11px}
+.plc-odds{color:var(--t3);font-size:11px;min-width:44px;text-align:right}
+.plc-footer{display:flex;gap:22px;padding:13px 19px;font-family:var(--fs);font-size:12px;color:var(--t2);border-top:1px solid var(--bdr)}
+.video-section{overflow:hidden;border-radius:var(--r3)}
+.vs-hdr{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid var(--bdr);font-family:var(--ff);font-size:17px;color:var(--t1)}
+.video-wrap{position:relative;padding-bottom:56.25%}
+.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+
+/* ── Stable ──────────────────────────────────── */
+.tabs{display:flex;gap:5px;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r3);padding:5px;margin-bottom:24px}
+.tab{flex:1;padding:9px 14px;background:transparent;border:1px solid transparent;border-radius:var(--r2);font-family:var(--fs);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);cursor:pointer;transition:var(--tr)}
+.tab:hover{color:var(--t1);background:rgba(255,255,255,.04)}
+.tab.active{background:rgba(240,192,64,.1);border-color:rgba(240,192,64,.28);color:var(--gold)}
+.horses-mgmt{display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:15px}
+.hcard{background:var(--bg3);border:1.5px solid var(--bdr);border-radius:var(--r4);padding:19px;position:relative;overflow:hidden;transition:var(--tr);display:flex;flex-direction:column;gap:13px}
+.hcard::before{content:'';position:absolute;top:0;left:0;right:0;height:100%;background:radial-gradient(ellipse at top,rgba(var(--hcr,240,192,64),.04),transparent 60%);pointer-events:none}
+.hcard-rarity-bar{position:absolute;top:0;left:0;right:0;height:3px;background:var(--hcc,var(--gold));opacity:.7}
+.hcard.clickable{cursor:pointer}
+.hcard.clickable:hover{border-color:var(--bdr2);transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.4)}
+.hcard.selected{border-color:var(--gold);background:var(--bg4);box-shadow:0 0 0 2px rgba(240,192,64,.25)}
+.hcard-avatar{display:flex;justify-content:center;position:relative;padding-bottom:3px}
+.hcard-avi-inner{width:72px;height:72px;background:rgba(255,255,255,.04);border:2px solid rgba(255,255,255,.08);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;position:relative}
+.hcard-avi-rarity{position:absolute;top:3px;right:3px;font-size:16px}
+.hcard-lvl{position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);background:var(--bg4);border:1px solid var(--bdr2);border-radius:100px;padding:2px 9px;font-family:var(--fs);font-size:10px;font-weight:700;color:var(--gold);white-space:nowrap}
+.hcard-info{text-align:center}
+.hcard-name{font-family:var(--ff);font-size:15px;margin-bottom:7px;line-height:1.3}
+.hcard-badges{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-bottom:7px}
+.hcard-record{display:flex;gap:11px;justify-content:center;font-family:var(--fs);font-size:11px;color:var(--t3)}
+.hcard-rating{position:absolute;top:15px;right:15px;text-align:center}
+.hcard-rating-n{font-family:var(--fs);font-size:20px;font-weight:700;color:var(--gold);line-height:1}
+.hcard-rating-l{font-family:var(--fs);font-size:9px;letter-spacing:.1em;color:var(--t3);text-transform:uppercase}
+.hcard-upg{border-top:1px solid var(--bdr);padding-top:12px;display:flex;flex-direction:column;gap:9px}
+.hcard-upg-title{font-family:var(--fs);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--t2)}
+.upg-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.upg-btn{justify-content:space-between;font-size:10px;padding:5px 9px}
+.hcard-sel-badge{position:absolute;top:11px;left:50%;transform:translateX(-50%);background:var(--gold);color:#0a0800;font-family:var(--fs);font-size:10px;font-weight:800;letter-spacing:.09em;padding:2px 12px;border-radius:100px;white-space:nowrap}
+.breed-panel{display:flex;flex-direction:column;gap:22px}
+.breed-info{font-family:var(--fs);font-size:13px;color:var(--t2)}
+.breed-info h3{font-family:var(--ff);font-size:17px;color:var(--gold);margin-bottom:9px}
+.breed-rules{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.breed-rule{background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:var(--r2);padding:5px 12px;font-family:var(--fs);font-size:12px;color:var(--t2)}
+.breed-rule strong{color:var(--gold)}
+.breed-parents{display:flex;align-items:center;gap:14px}
+.bp-slot{flex:1;min-height:90px;border-radius:var(--r3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:18px;text-align:center;transition:var(--tr)}
+.bp-slot.empty{border:2px dashed var(--bdr);background:rgba(255,255,255,.02)}
+.bp-slot.filled{border:2px solid rgba(240,192,64,.28);background:rgba(240,192,64,.06)}
+.bp-empty-lbl{font-family:var(--fs);font-size:13px;color:var(--t3);line-height:1.6}
+.bp-empty-lbl span{font-size:11px;opacity:.6}
+.bp-name{font-family:var(--ff);font-size:15px}
+.breed-x{font-family:var(--ff);font-size:28px;color:var(--gold3);flex-shrink:0}
+.breed-action{display:flex;flex-direction:column;align-items:center;gap:9px}
+.breed-no-coins{font-family:var(--fs);font-size:12px;color:var(--red)}
+.breed-result{background:var(--bg4);border:1px solid var(--gold);border-radius:var(--r4);padding:22px;max-width:340px;margin:0 auto;box-shadow:0 0 24px rgba(240,192,64,.1)}
+.breed-result-title{font-family:var(--ff);font-size:19px;color:var(--gold);text-align:center;margin-bottom:14px}
+.breed-select-title{font-family:var(--ff);font-size:17px;color:var(--t1)}
+.cooldown-overlay{position:absolute;inset:0;background:rgba(5,5,14,.76);border-radius:var(--r4);display:flex;align-items:center;justify-content:center;font-family:var(--fs);font-size:13px;font-weight:600;color:var(--t2);backdrop-filter:blur(2px)}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.shop-card{background:var(--bg3);border:1.5px solid var(--bdr);border-radius:var(--r3);padding:20px;text-align:center;display:flex;flex-direction:column;gap:12px;transition:var(--tr)}
+.shop-card:hover{border-color:var(--bdr2);transform:translateY(-2px)}
+.shop-emoji{font-size:44px;animation:float 3s ease-in-out infinite}
+.shop-name{font-family:var(--ff);font-size:16px;color:var(--t1)}
+.shop-desc{font-family:var(--fs);font-size:12px;color:var(--t2)}
+.shop-price{font-family:var(--fs);font-size:16px;font-weight:700;color:var(--gold)}
+
+/* ── Sim Race ────────────────────────────────── */
+.prize-table{display:flex;flex-direction:column;padding:0;overflow:hidden;margin-bottom:24px}
+.pr-row{display:flex;justify-content:space-between;align-items:center;padding:11px 19px;border-bottom:1px solid var(--bdr);font-family:var(--fs);font-size:13px;color:var(--t2)}
+.pr-row:last-child{border-bottom:none}
+.pr-row.fee{background:rgba(239,68,68,.04)}
+.pr-note{padding:11px 19px;font-family:var(--fs);font-size:11px;color:var(--t3);font-style:italic;border-top:1px solid var(--bdr)}
+.simrace-horses{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.simrace-action{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r3);padding:18px 22px;margin-top:20px}
+.sr-entry-info{font-family:var(--fs);font-size:13px;color:var(--t2)}
+.track-wrap{background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r4);padding:26px;overflow:hidden}
+.track-title{font-family:var(--ff);font-size:20px;color:var(--gold);text-align:center;margin-bottom:24px;animation:pulsgold 1s ease-in-out infinite}
+.track-lanes{display:flex;flex-direction:column;gap:14px}
+.track-lane{display:grid;grid-template-columns:150px 1fr 36px;align-items:center;gap:11px}
+@media(max-width:580px){.track-lane{grid-template-columns:110px 1fr 30px}}
+.lane-label{display:flex;align-items:center;gap:7px;overflow:hidden}
+.lane-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.lane-name{font-family:var(--fs);font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lane-track{height:34px;background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:var(--r2);position:relative;overflow:hidden}
+.lane-fill{position:absolute;left:0;top:0;bottom:0;opacity:.35;border-radius:var(--r2)}
+.lane-runner{position:absolute;top:50%;transform:translateY(-50%);font-size:18px;z-index:2;line-height:1;filter:drop-shadow(0 0 5px rgba(255,255,255,.25))}
+.lane-finish{position:absolute;right:0;top:0;bottom:0;width:3px;background:repeating-linear-gradient(to bottom,#fff 0,#fff 5px,#000 5px,#000 10px);opacity:.45}
+.lane-pct{font-family:var(--fs);font-size:11px;color:var(--t3);text-align:right}
+.track-vibe{text-align:center;margin-top:18px;font-family:var(--ff);font-size:15px;color:var(--gold3);letter-spacing:.08em;animation:pulsgold 1.5s ease-in-out infinite}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:7px;height:210px;padding:0 18px;margin-bottom:24px}
+.podium-place{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;max-width:160px;animation:fadeup .5s ease both}
+.pp-avatar{position:relative;font-size:34px;animation:float 2s ease-in-out infinite}
+.pp-yours{position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:var(--gold);color:#0a0800;font-family:var(--fs);font-size:8px;font-weight:800;letter-spacing:.08em;padding:2px 7px;border-radius:100px;white-space:nowrap}
+.pp-name{font-family:var(--fs);font-size:12px;font-weight:700;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.pp-pos{font-family:var(--fs);font-size:12px;font-weight:800;color:var(--gold)}
+.pp-block{width:100%;border-radius:6px 6px 0 0;opacity:.65}
+.pp-1 .pp-block{height:88px}
+.pp-2 .pp-block{height:62px}
+.pp-3 .pp-block{height:42px}
+.result-tbl{padding:0;overflow:hidden}
+.rt-title{font-family:var(--ff);font-size:17px;color:var(--t1);padding:15px 19px;border-bottom:1px solid var(--bdr)}
+.rt-row{display:flex;align-items:center;gap:12px;padding:11px 19px;border-bottom:1px solid var(--bdr);font-family:var(--fs)}
+.rt-row:last-child{border-bottom:none}
+.rt-row.mine{background:rgba(240,192,64,.06)}
+.rt-pos{font-size:18px;width:32px}
+.rt-name{flex:1;font-size:13px;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:9px}
+.yours-tag{background:var(--gold3);color:#0a0800;font-size:9px;font-weight:800;letter-spacing:.08em;padding:2px 7px;border-radius:100px}
+.rt-prize{font-size:13px;color:var(--t3)}
+.rt-prize.won{color:var(--gold);font-weight:700}
+.race-summary-card{text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
+.race-summary-card.won{border-color:rgba(240,192,64,.38);background:rgba(240,192,64,.04)}
+.sum-emoji{font-size:46px;animation:float 2s ease-in-out infinite}
+.sum-text{font-family:var(--ff);font-size:20px}
+.sum-sub{font-family:var(--fs);font-size:13px;color:var(--t2)}
+
+/* ── Leaderboard ─────────────────────────────── */
+.lb-sort{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:26px}
+.lb-sort-btn{padding:7px 15px;background:var(--bg3);border:1px solid var(--bdr);border-radius:100px;font-family:var(--fs);font-size:12px;font-weight:700;color:var(--t3);cursor:pointer;transition:var(--tr)}
+.lb-sort-btn:hover{color:var(--t1);border-color:var(--bdr2)}
+.lb-sort-btn.active{background:rgba(240,192,64,.1);border-color:rgba(240,192,64,.32);color:var(--gold)}
+.lb-podium{display:flex;align-items:flex-end;justify-content:center;gap:7px;height:220px;margin-bottom:28px}
+.lbp-place{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;max-width:170px;animation:fadeup .5s ease both}
+.lbp-crown{font-size:26px}
+.lbp-avatar{width:50px;height:50px;border-radius:50%;background:var(--bg4);border:2px solid var(--bdr2);display:flex;align-items:center;justify-content:center;font-family:var(--ff);font-size:20px;font-weight:700;color:var(--gold)}
+.lbp-name{font-family:var(--fs);font-size:12px;font-weight:700;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;color:var(--t1)}
+.lbp-val{font-family:var(--fs);font-size:13px;font-weight:700;color:var(--gold)}
+.lbp-tier{font-family:var(--fs);font-size:10px;letter-spacing:.05em}
+.lbp-block{width:100%;border-radius:5px 5px 0 0}
+.lbp-1 .lbp-block{height:88px;background:linear-gradient(180deg,rgba(240,192,64,.38),rgba(240,192,64,.12));border:1px solid rgba(240,192,64,.38)}
+.lbp-2 .lbp-block{height:63px;background:linear-gradient(180deg,rgba(156,163,175,.22),rgba(156,163,175,.06));border:1px solid rgba(156,163,175,.28)}
+.lbp-3 .lbp-block{height:43px;background:linear-gradient(180deg,rgba(180,83,9,.22),rgba(180,83,9,.06));border:1px solid rgba(180,83,9,.28)}
+.lb-table{padding:0;overflow:hidden;margin-bottom:26px}
+.lb-head{display:grid;grid-template-columns:54px 1fr 54px 80px 90px 100px;gap:11px;padding:11px 18px;background:rgba(255,255,255,.03);border-bottom:1px solid var(--bdr);font-family:var(--fs);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
+.lb-row{display:grid;grid-template-columns:54px 1fr 54px 80px 90px 100px;gap:11px;align-items:center;padding:13px 18px;border-bottom:1px solid var(--bdr);font-family:var(--fs);font-size:13px;transition:var(--tr)}
+.lb-row:last-child{border-bottom:none}
+.lb-row:hover{background:rgba(255,255,255,.02)}
+.lb-row.me{background:rgba(240,192,64,.06)}
+@media(max-width:700px){.lb-head,.lb-row{grid-template-columns:44px 1fr 44px 90px}.lb-col-hide{display:none}}
+.lb-rank{font-size:18px}
+.lb-name-col{display:flex;flex-direction:column;gap:2px;overflow:hidden}
+.lb-name-text{font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-tier{font-size:10px}
+.lb-level{color:var(--t3);font-size:11px}
+.lb-stat{color:var(--t2)}
+.lb-score{font-weight:700;text-align:right}
+.lb-empty{display:flex;flex-direction:column;align-items:center;gap:11px;padding:55px 18px;font-family:var(--fs);font-size:44px;color:var(--t3)}
+.lb-empty div:last-child{font-size:14px}
+.my-stats-box{margin-top:4px}
+.my-stats-box h3{font-family:var(--ff);font-size:19px;color:var(--gold);margin-bottom:16px}
+.my-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:14px}
+@media(max-width:560px){.my-stat-grid{grid-template-columns:repeat(2,1fr)}}
+.my-stat{background:rgba(255,255,255,.03);border:1px solid var(--bdr);border-radius:var(--r2);padding:13px;text-align:center}
+.my-stat-lbl{font-family:var(--fs);font-size:11px;color:var(--t3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em}
+.my-stat-v{font-family:var(--fs);font-size:21px;font-weight:800;color:var(--t1)}
+.my-rank{font-family:var(--fs);font-size:14px;color:var(--t2);text-align:center;padding-top:13px;border-top:1px solid var(--bdr)}
+.my-rank strong{color:var(--gold);font-size:17px}
+
+/* ── Toast ───────────────────────────────────── */
+#toasts{position:fixed;top:76px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:9px;pointer-events:none}
+.toast{background:var(--bg4);border:1px solid var(--bdr2);border-radius:var(--r2);padding:13px 18px;font-family:var(--fs);font-size:13px;animation:scalein .28s ease;min-width:210px}
+.toast.success{border-color:rgba(34,197,94,.45);color:var(--green)}
+.toast.error{border-color:rgba(239,68,68,.45);color:var(--red)}
+.toast.gold{border-color:rgba(240,192,64,.45);color:var(--gold)}
+
+/* ── Misc ────────────────────────────────────── */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--bdr2),transparent);margin:22px 0}
+.empty-state{text-align:center;padding:55px 18px;font-family:var(--fs);color:var(--t3);font-size:15px}
+.info-box{background:rgba(240,192,64,.06);border:1px solid rgba(240,192,64,.18);border-radius:var(--r2);padding:13px 16px;font-family:var(--fs);font-size:13px;color:var(--t2);margin-bottom:18px}
+.info-box p{margin-bottom:7px}
+.info-box p:last-child{margin-bottom:0}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:18px;font-family:var(--ff);color:var(--gold);font-size:16px;letter-spacing:.09em}
+.loading .emoji{font-size:60px;animation:float 1.5s ease-in-out infinite}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toasts"></div>
+<canvas id="confetti-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:9998;width:100%;height:100%;display:none"></canvas>
+
+<script>
+'use strict';
+
+/* ════════════════════════════════════════════════
+   RACE DATA
+   ════════════════════════════════════════════════ */
+const RACES = [
+  {id:'r01',name:'2015 Belmont Stakes',track:'Belmont Park, New York',distance:'1.5 miles (12f)',surface:'Dirt',condition:'Fast',date:'June 6, 2015',country:'USA',grade:'Grade I',purse:'$1,500,000',videoId:'dBsv2BmFiuA',videoStart:180,difficulty:'easy',winner:'h01_1',
+   description:'The 147th running — American Pharoah bids to end a 37-year Triple Crown drought.',
+   result:{positions:['h01_1','h01_4','h01_3','h01_2'],winTime:'2:26.65',margin:'5½ lengths'},
+   horses:[
+    {id:'h01_1',name:'American Pharoah',number:5,jockey:'Victor Espinoza',trainer:'Bob Baffert',odds:'3/5',oddsN:1.6,color:'#1a6b3c',form:['1st','1st','1st','1st','1st'],weight:'126 lbs',age:3,stats:{speed:98,stamina:95,acceleration:97,luck:99}},
+    {id:'h01_2',name:'Frosted',number:3,jockey:'Joel Rosario',trainer:'Kiaran McLaughlin',odds:'5/1',oddsN:6,color:'#c8a84b',form:['2nd','1st','3rd','2nd','1st'],weight:'126 lbs',age:3,stats:{speed:90,stamina:87,acceleration:88,luck:85}},
+    {id:'h01_3',name:'Mubtaahij',number:2,jockey:'Mike Smith',trainer:'Mike de Kock',odds:'9/2',oddsN:5.5,color:'#8b1a1a',form:['1st','1st','2nd','1st','3rd'],weight:'126 lbs',age:3,stats:{speed:88,stamina:85,acceleration:86,luck:82}},
+    {id:'h01_4',name:'Tonalist',number:8,jockey:'John Velazquez',trainer:'Christophe Clement',odds:'15/1',oddsN:16,color:'#2a5298',form:['1st','3rd','2nd','4th','2nd'],weight:'126 lbs',age:4,stats:{speed:85,stamina:90,acceleration:80,luck:78}}
+  ]},
+  {id:'r02',name:'2018 Cox Plate',track:'Moonee Valley, Melbourne',distance:'2040m',surface:'Turf',condition:'Good',date:'October 27, 2018',country:'Australia',grade:'Group 1',purse:'$3,000,000',videoId:'GWpPdEnlFok',videoStart:120,difficulty:'easy',winner:'h02_1',
+   description:'The great mare Winx goes for her 4th consecutive Cox Plate, chasing immortality.',
+   result:{positions:['h02_1','h02_2','h02_3','h02_4'],winTime:'2:04.04',margin:'4 lengths'},
+   horses:[
+    {id:'h02_1',name:'Winx',number:4,jockey:'Hugh Bowman',trainer:'Chris Waller',odds:'1/20',oddsN:1.05,color:'#6b21a8',form:['1st','1st','1st','1st','1st'],weight:'58.5 kg',age:7,stats:{speed:99,stamina:98,acceleration:96,luck:100}},
+    {id:'h02_2',name:'Benbatl',number:2,jockey:'Oisin Murphy',trainer:'Saeed bin Suroor',odds:'6/1',oddsN:7,color:'#b45309',form:['1st','2nd','1st','3rd','1st'],weight:'56.5 kg',age:4,stats:{speed:91,stamina:89,acceleration:90,luck:87}},
+    {id:'h02_3',name:'Humidor',number:7,jockey:'Damien Oliver',trainer:'Mathew Ellerton',odds:'8/1',oddsN:9,color:'#0f766e',form:['2nd','1st','3rd','2nd','2nd'],weight:'57 kg',age:6,stats:{speed:89,stamina:92,acceleration:85,luck:86}},
+    {id:'h02_4',name:'Brutal',number:9,jockey:'Blake Shinn',trainer:'Mark Newnham',odds:'40/1',oddsN:41,color:'#be123c',form:['3rd','4th','2nd','5th','3rd'],weight:'55.5 kg',age:5,stats:{speed:83,stamina:85,acceleration:82,luck:75}}
+  ]},
+  {id:'r03',name:'2019 Melbourne Cup',track:'Flemington, Melbourne',distance:'3200m',surface:'Turf',condition:'Good',date:'November 5, 2019',country:'Australia',grade:'Group 1',purse:'$7,750,000',videoId:'DP3y9HXx7T8',videoStart:200,difficulty:'hard',winner:'h03_1',
+   description:'The race that stops a nation — 24 runners battle over 3200 metres.',
+   result:{positions:['h03_1','h03_2','h03_3','h03_4','h03_5'],winTime:'3:17.30',margin:'½ length'},
+   horses:[
+    {id:'h03_1',name:'Vow And Declare',number:6,jockey:'Craig Williams',trainer:"Danny O'Brien",odds:'10/1',oddsN:11,color:'#1d4ed8',form:['2nd','3rd','1st','2nd','1st'],weight:'55.5 kg',age:5,stats:{speed:87,stamina:94,acceleration:83,luck:82}},
+    {id:'h03_2',name:'Il Paradiso',number:12,jockey:'Damian Lane',trainer:'Gai Waterhouse',odds:'9/1',oddsN:10,color:'#15803d',form:['1st','4th','2nd','1st','5th'],weight:'54 kg',age:4,stats:{speed:86,stamina:91,acceleration:85,luck:80}},
+    {id:'h03_3',name:'Master Of Reality',number:1,jockey:'Mark Zahra',trainer:"Joseph O'Brien",odds:'12/1',oddsN:13,color:'#7c3aed',form:['1st','2nd','4th','1st','3rd'],weight:'57 kg',age:4,stats:{speed:85,stamina:93,acceleration:82,luck:79}},
+    {id:'h03_4',name:'Constantinople',number:3,jockey:'Hugh Bowman',trainer:'Chris Waller',odds:'7/1',oddsN:8,color:'#b45309',form:['2nd','1st','3rd','2nd','4th'],weight:'56 kg',age:5,stats:{speed:88,stamina:89,acceleration:84,luck:81}},
+    {id:'h03_5',name:'Finche',number:8,jockey:'Ben Melham',trainer:'Chris Waller',odds:'20/1',oddsN:21,color:'#334155',form:['3rd','5th','2nd','6th','2nd'],weight:'56.5 kg',age:7,stats:{speed:84,stamina:92,acceleration:80,luck:77}}
+  ]},
+  {id:'r04',name:'2021 The Everest',track:'Royal Randwick, Sydney',distance:'1200m',surface:'Turf',condition:'Good to Firm',date:'October 16, 2021',country:'Australia',grade:'Listed',purse:'$15,000,000',videoId:'ZtLpKUCZEXg',videoStart:60,difficulty:'hard',winner:'h04_1',
+   description:"World's richest turf race per runner — 12 elite sprinters at $1.25M per slot.",
+   result:{positions:['h04_1','h04_2','h04_3','h04_4'],winTime:'1:09.27',margin:'Short ½ head'},
+   horses:[
+    {id:'h04_1',name:'Nature Strip',number:2,jockey:'James McDonald',trainer:'Chris Waller',odds:'3/1',oddsN:4,color:'#dc2626',form:['1st','1st','2nd','1st','1st'],weight:'59 kg',age:7,stats:{speed:99,stamina:85,acceleration:98,luck:92}},
+    {id:'h04_2',name:'Eduardo',number:6,jockey:'Blake Shinn',trainer:'Joe Pride',odds:'5/2',oddsN:3.5,color:'#0369a1',form:['1st','1st','1st','3rd','1st'],weight:'59 kg',age:7,stats:{speed:97,stamina:83,acceleration:96,luck:90}},
+    {id:'h04_3',name:'Classique Legend',number:9,jockey:'Tim Clark',trainer:'Les Bridge',odds:'7/2',oddsN:4.5,color:'#16a34a',form:['1st','2nd','1st','1st','2nd'],weight:'59 kg',age:6,stats:{speed:96,stamina:82,acceleration:95,luck:89}},
+    {id:'h04_4',name:'Masked Crusader',number:4,jockey:'Kerrin McEvoy',trainer:'Chris Waller',odds:'8/1',oddsN:9,color:'#9333ea',form:['2nd','1st','3rd','2nd','1st'],weight:'57 kg',age:5,stats:{speed:93,stamina:80,acceleration:91,luck:85}}
+  ]},
+  {id:'r05',name:'2019 Kentucky Derby',track:'Churchill Downs, Louisville',distance:'1¼ miles (10f)',surface:'Dirt',condition:'Sloppy',date:'May 4, 2019',country:'USA',grade:'Grade I',purse:'$3,000,000',videoId:'QxQHYqJmFBI',videoStart:120,difficulty:'hard',winner:'h05_1',
+   description:'One of the most controversial Derbies ever — the apparent winner was disqualified!',
+   result:{positions:['h05_1','h05_3','h05_4','h05_2'],winTime:'2:03.93',margin:'¾ length (after DQ)'},
+   horses:[
+    {id:'h05_1',name:'Country House',number:20,jockey:'Flavien Prat',trainer:'Bill Mott',odds:'65/1',oddsN:66,color:'#1a4731',form:['2nd','1st','2nd','1st','3rd'],weight:'126 lbs',age:3,stats:{speed:88,stamina:89,acceleration:86,luck:83}},
+    {id:'h05_2',name:'Maximum Security',number:7,jockey:'Luis Saez',trainer:'Jason Servis',odds:'3/1',oddsN:4,color:'#b91c1c',form:['1st','1st','1st','1st','1st'],weight:'126 lbs',age:3,stats:{speed:95,stamina:90,acceleration:93,luck:95}},
+    {id:'h05_3',name:'Code Of Honor',number:14,jockey:'John Velazquez',trainer:'Claude McGaughey',odds:'6/1',oddsN:7,color:'#1e40af',form:['1st','3rd','2nd','1st','2nd'],weight:'126 lbs',age:3,stats:{speed:89,stamina:87,acceleration:88,luck:84}},
+    {id:'h05_4',name:'Tacitus',number:10,jockey:'Jose Ortiz',trainer:'Bill Mott',odds:'8/1',oddsN:9,color:'#5b21b6',form:['1st','1st','2nd','2nd','1st'],weight:'126 lbs',age:3,stats:{speed:91,stamina:88,acceleration:89,luck:86}}
+  ]},
+  {id:'r06',name:'2020 Prix de l\'Arc de Triomphe',track:'ParisLongchamp, France',distance:'2400m',surface:'Turf',condition:'Very Soft',date:'October 4, 2020',country:'France',grade:'Group 1',purse:'€5,000,000',videoId:'lpVzRyHwZYk',videoStart:150,difficulty:'hard',winner:'h06_1',
+   description:'Enable seeks an unprecedented third Arc — can she overcome the heavy ground?',
+   result:{positions:['h06_1','h06_2','h06_3','h06_4'],winTime:'2:36.44',margin:'Short ½ head'},
+   horses:[
+    {id:'h06_1',name:'Sottsass',number:4,jockey:'Christophe Soumillon',trainer:'Jean-Claude Rouget',odds:'6/1',oddsN:7,color:'#1e3a5f',form:['1st','2nd','1st','3rd','1st'],weight:'60 kg',age:4,stats:{speed:91,stamina:93,acceleration:89,luck:87}},
+    {id:'h06_2',name:'Enable',number:1,jockey:'Frankie Dettori',trainer:'John Gosden',odds:'2/1',oddsN:3,color:'#713f12',form:['1st','1st','1st','1st','2nd'],weight:'59 kg',age:7,stats:{speed:93,stamina:95,acceleration:91,luck:94}},
+    {id:'h06_3',name:'Magical',number:7,jockey:'Ryan Moore',trainer:"Aidan O'Brien",odds:'4/1',oddsN:5,color:'#4c0519',form:['1st','2nd','1st','1st','2nd'],weight:'59 kg',age:6,stats:{speed:92,stamina:93,acceleration:90,luck:92}},
+    {id:'h06_4',name:'Stradivarius',number:9,jockey:'Frankie Dettori',trainer:'John Gosden',odds:'12/1',oddsN:13,color:'#1c4532',form:['1st','1st','2nd','1st','3rd'],weight:'60 kg',age:6,stats:{speed:88,stamina:97,acceleration:85,luck:88}}
+  ]},
+  {id:'r07',name:'2017 Cheltenham Gold Cup',track:'Cheltenham, UK',distance:'3m 2½f',surface:'Turf (Jumps)',condition:'Soft',date:'March 17, 2017',country:'UK',grade:'Grade 1',purse:'£625,000',videoId:'KnvqkR7BVJA',videoStart:300,difficulty:'hard',winner:'h07_1',
+   description:"Jump racing's greatest prize — five elite chasers battle over 26 fences.",
+   result:{positions:['h07_1','h07_2','h07_3','h07_4','h07_5'],winTime:'6:35.90',margin:'1¼ lengths'},
+   horses:[
+    {id:'h07_1',name:'Sizing John',number:3,jockey:'Robbie Power',trainer:'Jessica Harrington',odds:'7/1',oddsN:8,color:'#0c4a6e',form:['1st','2nd','1st','3rd','1st'],weight:'11-10',age:7,stats:{speed:88,stamina:96,acceleration:85,luck:84}},
+    {id:'h07_2',name:'Minella Rocco',number:11,jockey:'Derek Fox',trainer:"Jonjo O'Neill",odds:'25/1',oddsN:26,color:'#7f1d1d',form:['3rd','1st','2nd','4th','2nd'],weight:'11-10',age:8,stats:{speed:85,stamina:95,acceleration:82,luck:80}},
+    {id:'h07_3',name:'Native River',number:7,jockey:'Richard Johnson',trainer:'Colin Tizzard',odds:'6/1',oddsN:7,color:'#14532d',form:['1st','1st','2nd','1st','3rd'],weight:'11-10',age:7,stats:{speed:86,stamina:97,acceleration:83,luck:86}},
+    {id:'h07_4',name:'Djakadam',number:2,jockey:'Ruby Walsh',trainer:'Willie Mullins',odds:'9/2',oddsN:5.5,color:'#1e3a5f',form:['2nd','2nd','1st','2nd','2nd'],weight:'11-10',age:9,stats:{speed:87,stamina:94,acceleration:84,luck:88}},
+    {id:'h07_5',name:'Cue Card',number:5,jockey:'Paddy Brennan',trainer:'Colin Tizzard',odds:'5/1',oddsN:6,color:'#78350f',form:['1st','3rd','1st','1st','4th'],weight:'11-10',age:12,stats:{speed:87,stamina:93,acceleration:86,luck:82}}
+  ]},
+  {id:'r08',name:'2022 Golden Eagle',track:'Rosehill Gardens, Sydney',distance:'1500m',surface:'Turf',condition:'Good',date:'November 5, 2022',country:'Australia',grade:'Group 1',purse:'$7,500,000',videoId:'xYz123AbCdE',videoStart:90,difficulty:'hard',winner:'h08_1',
+   description:"Sydney's premier spring mile — four elite horses clash in a $7.5M showdown.",
+   result:{positions:['h08_1','h08_2','h08_3','h08_4'],winTime:'1:29.64',margin:'¾ length'},
+   horses:[
+    {id:'h08_1',name:'Anamoe',number:3,jockey:'James McDonald',trainer:'James Cummings',odds:'2/1',oddsN:3,color:'#0f4c81',form:['1st','1st','1st','2nd','1st'],weight:'58 kg',age:4,stats:{speed:95,stamina:90,acceleration:94,luck:93}},
+    {id:'h08_2',name:'Zaaki',number:1,jockey:'Damian Lane',trainer:'Annabel Neasham',odds:'5/2',oddsN:3.5,color:'#7c2d12',form:['1st','1st','2nd','1st','1st'],weight:'58.5 kg',age:7,stats:{speed:93,stamina:89,acceleration:92,luck:91}},
+    {id:'h08_3',name:'Cascadian',number:7,jockey:'Hugh Bowman',trainer:'Chris Waller',odds:'4/1',oddsN:5,color:'#166534',form:['2nd','1st','3rd','2nd','2nd'],weight:'57.5 kg',age:5,stats:{speed:90,stamina:88,acceleration:89,luck:87}},
+    {id:'h08_4',name:'Hinged',number:5,jockey:'Tim Clark',trainer:'Mark Newnham',odds:'10/1',oddsN:11,color:'#581c87',form:['3rd','2nd','1st','4th','3rd'],weight:'54 kg',age:4,stats:{speed:88,stamina:85,acceleration:87,luck:82}}
+  ]},
+  {id:'r09',name:'2023 Doncaster Mile',track:'Royal Randwick, Sydney',distance:'1600m',surface:'Turf',condition:'Good to Firm',date:'April 1, 2023',country:'Australia',grade:'Group 1',purse:'$3,000,000',videoId:'DoncasterMile23x',videoStart:100,difficulty:'hard',winner:'h09_1',
+   description:'The great Anamoe hunts a career-defining win in Sydney\'s premier mile.',
+   result:{positions:['h09_1','h09_2','h09_3','h09_4'],winTime:'1:34.01',margin:'2 lengths'},
+   horses:[
+    {id:'h09_1',name:'Anamoe',number:1,jockey:'James McDonald',trainer:'James Cummings',odds:'5/4',oddsN:2.25,color:'#0f4c81',form:['1st','1st','1st','1st','1st'],weight:'59 kg',age:5,stats:{speed:96,stamina:92,acceleration:95,luck:96}},
+    {id:'h09_2',name:'Alligator Blood',number:5,jockey:'Nash Rawiller',trainer:"Danny O'Brien",odds:'7/2',oddsN:4.5,color:'#7f1d1d',form:['1st','2nd','1st','3rd','1st'],weight:'57 kg',age:7,stats:{speed:91,stamina:89,acceleration:90,luck:88}},
+    {id:'h09_3',name:'Forbidden Love',number:3,jockey:'Tim Clark',trainer:'Chris Waller',odds:'5/1',oddsN:6,color:'#be185d',form:['2nd','1st','2nd','1st','2nd'],weight:'56.5 kg',age:6,stats:{speed:90,stamina:88,acceleration:91,luck:89}},
+    {id:'h09_4',name:'Tuvalu',number:7,jockey:'James Innes Jr.',trainer:'Joe Pride',odds:'8/1',oddsN:9,color:'#0369a1',form:['3rd','1st','4th','2nd','1st'],weight:'57 kg',age:5,stats:{speed:89,stamina:87,acceleration:88,luck:85}}
+  ]},
+  {id:'r10',name:'2022 Caulfield Cup',track:'Caulfield, Melbourne',distance:'2400m',surface:'Turf',condition:'Good',date:'October 15, 2022',country:'Australia',grade:'Group 1',purse:'$5,000,000',videoId:'CaulfieldCup22z',videoStart:150,difficulty:'hard',winner:'h10_1',
+   description:'A key spring carnival prep — five elite stayers at the tight Caulfield track.',
+   result:{positions:['h10_1','h10_2','h10_3','h10_4','h10_5'],winTime:'2:29.58',margin:'½ length'},
+   horses:[
+    {id:'h10_1',name:'Gold Trip',number:9,jockey:'Mark Zahra',trainer:'Ciaron Maher',odds:'5/1',oddsN:6,color:'#b45309',form:['4th','1st','2nd','3rd','1st'],weight:'55 kg',age:5,stats:{speed:88,stamina:94,acceleration:86,luck:83}},
+    {id:'h10_2',name:'Durston',number:4,jockey:'Damian Lane',trainer:'Andrew Forsman',odds:'10/1',oddsN:11,color:'#1d4ed8',form:['2nd','1st','3rd','2nd','2nd'],weight:'54 kg',age:5,stats:{speed:86,stamina:93,acceleration:84,luck:82}},
+    {id:'h10_3',name:'Montefilia',number:2,jockey:'James McDonald',trainer:'Chris Waller',odds:'3/1',oddsN:4,color:'#7c3aed',form:['1st','2nd','1st','1st','2nd'],weight:'56.5 kg',age:5,stats:{speed:90,stamina:91,acceleration:88,luck:89}},
+    {id:'h10_4',name:'Explosive Jack',number:6,jockey:'Craig Williams',trainer:"Danny O'Brien",odds:'8/1',oddsN:9,color:'#dc2626',form:['1st','3rd','2nd','1st','3rd'],weight:'55.5 kg',age:6,stats:{speed:87,stamina:92,acceleration:85,luck:81}},
+    {id:'h10_5',name:'Realm Of Flowers',number:11,jockey:'Hugh Bowman',trainer:'Gai Waterhouse',odds:'6/1',oddsN:7,color:'#15803d',form:['2nd','1st','4th','2nd','1st'],weight:'54 kg',age:4,stats:{speed:88,stamina:90,acceleration:87,luck:84}}
+  ]}
+];
+
+/* ════════════════════════════════════════════════
+   CONSTANTS
+   ════════════════════════════════════════════════ */
+const HORSE_NAMES = ['Dusty Trails','Morning Glory','Silver Streak','Iron Will','First Light','Thunder Bolt','Golden Dawn','Storm Chaser','Wild Spirit','Blaze Runner','Crimson Flash','Shadow Dancer','Silver Arrow','Iron Storm','Desert Wind','Arctic Blast','Solar Flare','Cosmic Ray','Diamond Edge','Midnight Star'];
+const COLORS = ['#c2410c','#1d4ed8','#15803d','#7c3aed','#b45309','#be185d','#0369a1','#dc2626','#0f766e','#854d0e'];
+const AI_NAMES = ['ThunderRider99','SpeedDemon_AU','CaulfieldKing','GoldenHoof','JockeyMike','TurfQueen','DirtTracker','Melbourne_Ace','GrandNational','StakesRunner','OddsBreaker','WinxFan2023'];
+const RARITY_EMOJI = {common:'🐴',rare:'⭐',epic:'💜',legendary:'👑'};
+const SHOP_ITEMS = [
+  {id:'common_horse',name:'Common Horse',emoji:'🐴',desc:'A solid starter horse. Decent stats, ready to race.',rarity:'common',cost:300},
+  {id:'rare_horse',name:'Rare Horse',emoji:'⭐',desc:'Better-than-average stats with a guaranteed rare rating.',rarity:'rare',cost:700},
+  {id:'epic_horse',name:'Epic Horse',emoji:'💜',desc:'High-performance horse with great base stats.',rarity:'epic',cost:1500},
+  {id:'mystery_horse',name:'Mystery Horse',emoji:'🎁',desc:'Could be anything — common, rare, epic, or even legendary!',rarity:null,cost:500},
+];
+
+/* ════════════════════════════════════════════════
+   STATE
+   ════════════════════════════════════════════════ */
+let G = {
+  page: 'home',
+  stableTab: 0,
+  breedPick1: null, breedPick2: null, breedResult: null,
+  challengePhase: 'pick', challengeSelected: null, challengeResult: null, showVideo: false,
+  simPhase: 'select', simSelected: [], simData: null, simFrame: 0, simTimer: null,
+  lbSort: 'coins',
+};
+let U = null;
+
+/* ════════════════════════════════════════════════
+   STORAGE
+   ════════════════════════════════════════════════ */
+function save() { try { localStorage.setItem('hh_v2', JSON.stringify(U)); } catch(e){} }
+function load() {
+  try {
+    const d = localStorage.getItem('hh_v2');
+    if (d) U = JSON.parse(d);
+  } catch(e){}
+}
+
+/* ════════════════════════════════════════════════
+   UTILS
+   ════════════════════════════════════════════════ */
+function uid() { return Math.random().toString(36).slice(2)+Date.now().toString(36); }
+function rnd(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function esc(s){ const d=document.createElement('div');d.textContent=String(s);return d.innerHTML; }
+function getDailyRaceIdx(){ return Math.floor(Date.now()/86400000)%RACES.length; }
+function getDailyKey(){ return 'daily_'+new Date().toDateString(); }
+function getRating(horse){ const s=horse.stats; return Math.round(s.speed*.3+s.stamina*.25+s.acceleration*.25+s.luck*.2); }
+function tierLabel(coins){
+  if(coins>=5000) return {label:'👑 Legend',color:'var(--gold)'};
+  if(coins>=2000) return {label:'💜 Elite',color:'#c084fc'};
+  if(coins>=1000) return {label:'⭐ Pro',color:'#60a5fa'};
+  return {label:'🐴 Rider',color:'var(--t2)'};
+}
+
+/* ════════════════════════════════════════════════
+   TOAST
+   ════════════════════════════════════════════════ */
+function toast(msg, type='gold', dur=3500){
+  const d = document.createElement('div');
+  d.className = `toast ${type}`;
+  d.textContent = msg;
+  document.getElementById('toasts').appendChild(d);
+  setTimeout(()=>d.remove(), dur);
+}
+
+/* ════════════════════════════════════════════════
+   CONFETTI
+   ════════════════════════════════════════════════ */
+function launchConfetti(){
+  const canvas = document.getElementById('confetti-canvas');
+  canvas.style.display = 'block';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  const COLS = ['#f0c040','#ffe566','#22c55e','#3b82f6','#a855f7','#ef4444','#f97316'];
+  const pieces = Array.from({length:90},()=>({
+    x:Math.random()*canvas.width, y:-20,
+    vx:(Math.random()-.5)*3, vy:2+Math.random()*3,
+    rot:Math.random()*360, rotv:(Math.random()-.5)*8,
+    size:8+Math.random()*10,
+    color:COLS[Math.floor(Math.random()*COLS.length)],
+    shape:Math.random()<.5?'rect':'circle'
+  }));
+  let frame=0;
+  const tick = ()=>{
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.rot+=p.rotv; p.vy+=.06;
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle=p.color;ctx.globalAlpha=Math.max(0,1-frame/120);
+      if(p.shape==='rect'){ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*.6);}
+      else{ctx.beginPath();ctx.arc(0,0,p.size/2,0,Math.PI*2);ctx.fill();}
+      ctx.restore();
+    });
+    frame++;
+    if(frame<160) requestAnimationFrame(tick);
+    else{ctx.clearRect(0,0,canvas.width,canvas.height);canvas.style.display='none';}
+  };
+  requestAnimationFrame(tick);
+}
+
+/* ════════════════════════════════════════════════
+   GAME LOGIC
+   ════════════════════════════════════════════════ */
+function createUser(name){
+  const horse = generateHorse('common');
+  horse.name = HORSE_NAMES[Math.floor(Math.random()*HORSE_NAMES.length)];
+  U = {id:uid(),name,coins:500,level:1,xp:0,streak:0,maxStreak:0,totalWins:0,totalPredictions:0,horses:[horse],dailyResults:{},createdAt:Date.now()};
+  save();
+}
+
+function generateHorse(rarity='common'){
+  const statBase = {common:50,rare:60,epic:70,legendary:82}[rarity]||50;
+  const statRange = {common:20,rare:18,epic:15,legendary:12}[rarity]||20;
+  return {
+    id:uid(), name:HORSE_NAMES[rnd(0,HORSE_NAMES.length-1)],
+    level:1, xp:0, color:COLORS[rnd(0,COLORS.length-1)], rarity,
+    wins:0, races:0, upgrades:{speed:0,stamina:0,acceleration:0,luck:0},
+    breedCooldown:null, parents:null,
+    stats:{speed:rnd(statBase,statBase+statRange),stamina:rnd(statBase,statBase+statRange),acceleration:rnd(statBase,statBase+statRange),luck:rnd(statBase,statBase+statRange)}
+  };
+}
+
+function predictRace(raceId, horseId){
+  const race = RACES.find(r=>r.id===raceId);
+  if(!race) return;
+  const key = getDailyKey();
+  if(U.dailyResults[key]) return;
+  const correct = horseId===race.winner;
+  const diff = race.difficulty==='easy'?100:250;
+  const streak = correct ? U.streak+1 : 0;
+  const coins = correct ? diff + streak*10 : 0;
+  const xp = correct ? 50 : 10;
+  U.streak = streak;
+  if(streak>U.maxStreak) U.maxStreak=streak;
+  U.totalPredictions++;
+  if(correct) U.totalWins++;
+  U.coins += coins;
+  U.xp += xp;
+  U.dailyResults[key]={raceId,horseId,correct};
+  levelCheck();
+  save();
+  return {correct,coins,streak,race};
+}
+
+function levelCheck(){
+  const needed = U.level*200;
+  if(U.xp>=needed){U.xp-=needed;U.level++;U.coins+=100;toast(`🎉 Level Up! You're now Level ${U.level}! +100 coins bonus!`,'gold',4000);}
+}
+
+function upgradeHorse(horseId, stat){
+  const horse = U.horses.find(h=>h.id===horseId);
+  if(!horse) return;
+  const cost = 100+horse.upgrades[stat]*50;
+  if(U.coins<cost){toast('Not enough coins!','error');return;}
+  if(horse.stats[stat]>=100){toast('Already maxed!','error');return;}
+  U.coins-=cost;
+  horse.stats[stat]=Math.min(100,horse.stats[stat]+5);
+  horse.upgrades[stat]++;
+  save();
+  toast(`⬆️ ${stat} upgraded! -${cost} coins`,'success');
+  render();
+}
+
+function breedHorses(id1, id2){
+  const h1=U.horses.find(h=>h.id===id1), h2=U.horses.find(h=>h.id===id2);
+  if(!h1||!h2) return;
+  if(U.coins<300){toast('Need 300 coins to breed!','error');return;}
+  const now=Date.now();
+  if(h1.breedCooldown&&h1.breedCooldown>now){toast(`${h1.name} is on breeding cooldown!`,'error');return;}
+  if(h2.breedCooldown&&h2.breedCooldown>now){toast(`${h2.name} is on breeding cooldown!`,'error');return;}
+  U.coins-=300;
+  h1.breedCooldown=now+3600000; h2.breedCooldown=now+3600000;
+  const roll=Math.random();
+  let rarity='common';
+  if(roll<.05)rarity='legendary';
+  else if(roll<.15)rarity='epic';
+  else if(roll<.35)rarity='rare';
+  const bonus={common:0,rare:5,epic:10,legendary:20}[rarity];
+  const avg = k=>Math.min(100,Math.round((h1.stats[k]+h2.stats[k])/2+(Math.random()*16-8)+bonus));
+  const foal={id:uid(),name:HORSE_NAMES[rnd(0,HORSE_NAMES.length-1)],level:1,xp:0,color:COLORS[rnd(0,COLORS.length-1)],rarity,wins:0,races:0,upgrades:{speed:0,stamina:0,acceleration:0,luck:0},breedCooldown:null,parents:[h1.name,h2.name],stats:{speed:avg('speed'),stamina:avg('stamina'),acceleration:avg('acceleration'),luck:avg('luck')}};
+  U.horses.push(foal);
+  save();
+  return foal;
+}
+
+function buyHorse(itemId){
+  const item=SHOP_ITEMS.find(i=>i.id===itemId);
+  if(!item){return;}
+  if(U.coins<item.cost){toast(`Need ${item.cost} coins!`,'error');return;}
+  U.coins-=item.cost;
+  let rarity=item.rarity;
+  if(!rarity){const r=Math.random();rarity=r<.05?'legendary':r<.15?'epic':r<.35?'rare':'common';}
+  const horse=generateHorse(rarity);
+  U.horses.push(horse);
+  save();
+  const emoji=RARITY_EMOJI[rarity];
+  toast(`${emoji} You got a ${rarity.toUpperCase()} horse: ${horse.name}!`,'gold',5000);
+  render();
+}
+
+function simulateRaceLogic(horseIds){
+  const ENTRY=50;
+  if(U.coins<ENTRY){toast('Need 50 coins for entry!','error');return null;}
+  let racers=[...U.horses.filter(h=>horseIds.includes(h.id))];
+  const aiNames=['Phantom','Storm Cloud','Iron Hooves','Dark Horse','Lightning Rod'];
+  while(racers.length<4){
+    racers.push({id:'ai_'+uid(),name:aiNames[racers.length-horseIds.length]||'AI Horse',color:'#475569',rarity:'common',stats:{speed:rnd(55,80),stamina:rnd(55,80),acceleration:rnd(55,80),luck:rnd(55,80)}});
+  }
+  U.coins-=ENTRY;
+  const scores=racers.map(h=>{
+    const s=h.stats;
+    const base=s.speed*.3+s.stamina*.25+s.acceleration*.25+s.luck*.2;
+    return {horse:h,score:base*(.78+Math.random()*.44)};
+  }).sort((a,b)=>b.score-a.score);
+  const results=scores.map((s,i)=>({...s.horse,position:i+1}));
+  // Update user horses
+  const prizes=[200,100,50,0];
+  let won=0;
+  results.forEach((r,i)=>{
+    const uh=U.horses.find(h=>h.id===r.id);
+    if(uh){
+      uh.races++;
+      if(i===0){uh.wins++;uh.xp=(uh.xp||0)+100;if(uh.xp>=(uh.level||1)*150){uh.xp-=(uh.level||1)*150;uh.level=(uh.level||1)+1;['speed','stamina','acceleration','luck'].forEach(s=>uh.stats[s]=Math.min(100,uh.stats[s]+2));}}
+      if(prizes[i]){U.coins+=prizes[i];won+=prizes[i];}
+    }
+  });
+  save();
+  // Build animation frames
+  const frames=[];
+  for(let t=0;t<=100;t+=2){
+    frames.push(results.map((r,fi)=>{
+      const target=t*(1-fi*.015);
+      const jitter=(Math.random()-.5)*6;
+      return {id:r.id,name:r.name,color:r.color,progress:Math.max(0,Math.min(100,target+jitter))};
+    }));
+  }
+  return {results,frames,won,entryFee:ENTRY};
+}
+
+function getLeaderboard(){
+  const ai = AI_NAMES.map((name,i)=>({id:'ai_lb_'+i,name,coins:rnd(200,8000),level:rnd(1,12),streak:rnd(0,15),wins:rnd(0,50),predictions:rnd(0,80),isAI:true}));
+  ai.forEach(p=>{p.winRate=p.predictions>0?Math.round(p.wins/p.predictions*100):0;});
+  const me = {id:U.id,name:U.name,coins:U.coins,level:U.level,streak:U.maxStreak,wins:U.totalWins,predictions:U.totalPredictions,winRate:U.totalPredictions>0?Math.round(U.totalWins/U.totalPredictions*100):0,isMe:true};
+  return [...ai,me].sort((a,b)=>b.coins-a.coins).map((p,i)=>({...p,rank:i+1}));
+}
+
+/* ════════════════════════════════════════════════
+   RENDER HELPERS
+   ════════════════════════════════════════════════ */
+function statBars(stats, color){
+  return `<div class="sbar-wrap">${['speed','stamina','acceleration','luck'].map(k=>`
+    <div class="sbar-row">
+      <span class="sbar-lbl">${{speed:'SPD',stamina:'STA',acceleration:'ACC',luck:'LCK'}[k]}</span>
+      <div class="sbar-track"><div class="sbar-fill" style="width:${stats[k]}%;background:linear-gradient(90deg,${color||'var(--gold3)'},${color||'var(--gold)'})"></div></div>
+      <span class="sbar-val">${stats[k]}</span>
+    </div>`).join('')}</div>`;
+}
+
+function horseCardHTML(horse, opts={}){
+  const {clickable,selected,showUpgrade,compact,showBreedOverlay}=opts;
+  const rating=getRating(horse);
+  const now=Date.now();
+  const onCooldown=horse.breedCooldown&&horse.breedCooldown>now;
+  const rarity=horse.rarity||'common';
+  const winRate=horse.races>0?Math.round(horse.wins/horse.races*100):0;
+  const upgradeCosts={speed:100+(horse.upgrades?.speed||0)*50,stamina:100+(horse.upgrades?.stamina||0)*50,acceleration:100+(horse.upgrades?.acceleration||0)*50,luck:100+(horse.upgrades?.luck||0)*50};
+  const upgradeHtml=showUpgrade?`<div class="hcard-upg"><div class="hcard-upg-title">⬆️ Upgrades</div><div class="upg-grid">${['speed','stamina','acceleration','luck'].map(k=>`<button class="btn btn-outline btn-sm upg-btn" data-action="upgrade" data-horse="${horse.id}" data-stat="${k}" ${horse.stats[k]>=100?'disabled':''}>${{speed:'SPD',stamina:'STA',acceleration:'ACC',luck:'LCK'}[k]} +5 <span style="color:var(--gold)">🪙${upgradeCosts[k]}</span></button>`).join('')}</div></div>`:'';
+  const parentsHtml=horse.parents?`<span class="badge b-rare" title="Parents: ${horse.parents.join(' × ')}">🧬 Bred</span>`:'';
+  const recordHtml=!compact?`<div class="hcard-record"><span>🏆 ${horse.wins}</span><span>🏁 ${horse.races}</span><span>📈 ${winRate}%</span></div>`:'';
+  return `
+    <div class="hcard${clickable?' clickable':''}${selected?' selected':''}" 
+         style="--hcc:${horse.color}" 
+         data-horse-id="${horse.id}"
+         ${clickable?`data-action="${opts.cardAction||'selectHorse'}"`:''}>
+      <div class="hcard-rarity-bar" style="background:${horse.color}"></div>
+      <div class="hcard-avatar">
+        <div class="hcard-avi-inner">
+          <span>${RARITY_EMOJI[rarity]||'🐴'}🐎</span>
+        </div>
+        <div class="hcard-lvl">Lv.${horse.level}</div>
+      </div>
+      <div class="hcard-rating"><div class="hcard-rating-n">${rating}</div><div class="hcard-rating-l">OVR</div></div>
+      <div class="hcard-info">
+        <div class="hcard-name">${esc(horse.name)}</div>
+        <div class="hcard-badges"><span class="badge b-${rarity}">${rarity}</span>${parentsHtml}</div>
+        ${recordHtml}
+      </div>
+      ${statBars(horse.stats, horse.color)}
+      ${upgradeHtml}
+      ${selected?'<div class="hcard-sel-badge">✓ SELECTED</div>':''}
+      ${showBreedOverlay&&onCooldown?'<div class="cooldown-overlay">⏰ Cooldown</div>':''}
+    </div>`;
+}
+
+/* ════════════════════════════════════════════════
+   PAGE: WELCOME
+   ════════════════════════════════════════════════ */
+function pageWelcome(){
+  return `
+  <div id="welcome">
+    <div class="wc">
+      <div class="wlogo">
+        <div style="font-size:70px;text-align:center;margin-bottom:14px;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 0 18px rgba(240,192,64,.4))">🐎</div>
+        <h1>HorseHub</h1>
+        <p>Race · Predict · Dominate</p>
+      </div>
+      <div class="wfeats">
+        ${[['🎯','Daily challenges using REAL past race data'],['🐎','Own, upgrade & breed virtual racehorses'],['🏁','Enter animated simulated races for coins'],['🏆','Climb the global leaderboard'],['🪙','Free to play — virtual coins only']].map((f,i)=>`<div class="wfeat" style="animation-delay:${i*.1}s"><span>${f[0]}</span><span>${f[1]}</span></div>`).join('')}
+      </div>
+      <div class="wreg">
+        <label>Choose your rider name</label>
+        <div class="winput-row">
+          <input class="winput" id="rname" type="text" placeholder="e.g. Thunder Rider" maxlength="22" autocomplete="off">
+          <button class="btn btn-gold btn-lg" data-action="register">🏇 Start!</button>
+        </div>
+        <div class="wreg-hint">You'll receive 1 free horse + 500 coins</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ════════════════════════════════════════════════
+   PAGE: NAVBAR
+   ════════════════════════════════════════════════ */
+function navbar(){
+  const links=[['home','🏠','Hub'],['challenge','🎯','Daily'],['stable','🐎','Stable'],['simrace','🏁','Race'],['leaderboard','🏆','Board']];
+  return `
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="#" data-action="nav" data-page="home">
+        <span class="nav-logo-icon">🐎</span>
+        <span class="nav-logo-text">HorseHub</span>
+      </a>
+      <ul class="nav-links">
+        ${links.map(([p,ic,lb])=>`<li><button class="nav-link${G.page===p?' active':''}" data-action="nav" data-page="${p}">${ic} ${lb}</button></li>`).join('')}
+      </ul>
+      <div class="nav-user">
+        <div class="nav-coins"><span>🪙</span><span>${U.coins.toLocaleString()}</span></div>
+        <div class="nav-pill">🔥 ${U.streak}</div>
+        <div class="nav-pill">Lv.${U.level}</div>
+      </div>
+    </div>
+  </nav>`;
+}
+
+/* ════════════════════════════════════════════════
+   PAGE: HOME
+   ════════════════════════════════════════════════ */
+function pageHome(){
+  const dr=RACES[getDailyRaceIdx()];
+  const key=getDailyKey();
+  const done=!!U.dailyResults[key];
+  const xpPct=Math.min(100,U.xp/(U.level*200)*100);
+  const wr=U.totalPredictions>0?Math.round(U.totalWins/U.totalPredictions*100):0;
+  const lb=getLeaderboard();
+  const myRank=lb.findIndex(p=>p.isMe)+1;
+  const top5=lb.slice(0,5);
+  const medals=['🥇','🥈','🥉'];
+  return `
+  <div class="pg">
+    <div class="hero">
+      <div class="hero-top">
+        <span class="emoji">🏇</span>
+        <div>
+          <div class="hero-name">Welcome back, <span>${esc(U.name)}</span></div>
+          <div class="hero-sub">Ready to dominate the track?</div>
+        </div>
+      </div>
+      <div class="stats-row">
+        ${[['🪙 Coins',U.coins.toLocaleString(),'gold'],['🔥 Streak',U.streak,''],['🏆 Wins',U.totalWins,''],['🎯 Picks',U.totalPredictions,''],['📈 Win Rate',wr+'%','']].map(([l,v,c])=>`<div class="stat-box"><div class="stat-box-v ${c}">${v}</div><div class="stat-box-l">${l}</div></div>`).join('')}
+      </div>
+      <div class="xp-bar-wrap">
+        <div class="xp-bar-info"><span>Level ${U.level}</span><span>${U.xp} / ${U.level*200} XP</span></div>
+        <div class="xp-track"><div class="xp-fill" style="width:${xpPct}%"></div></div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>Quick Actions</h2>
+      <div class="actions-grid">
+        ${[['challenge','🎯','Daily Race',done?'Completed ✓':'Predict now!',!done],['stable','🐎','My Stable',`${U.horses.length} horses`,false],['simrace','🏁','Sim Race','Win coins!',false],['leaderboard','🏆','Leaderboard','Rank #'+myRank,false]].map(([p,ic,lbl,sub,gold])=>`
+        <div class="action-card${gold?' gold-action':''}" data-action="nav" data-page="${p}">
+          <span class="action-icon">${ic}</span>
+          <div class="action-lbl">${lbl}</div>
+          <div class="action-sub">${sub}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="section">
+      <h2>Today's Race — ${esc(dr.name)}</h2>
+      <div class="card card-hi daily-preview">
+        <div class="dp-hdr">
+          <div>
+            <div class="dp-name">${esc(dr.name)}</div>
+            <div class="dp-meta">
+              <span>📍 ${esc(dr.track)}</span>
+              <span>📏 ${esc(dr.distance)}</span>
+              <span class="badge b-${dr.difficulty}">${dr.difficulty?.toUpperCase()}</span>
+            </div>
+          </div>
+          ${done?'<div class="done-badge">✓ Completed</div>':`<button class="btn btn-gold" data-action="nav" data-page="challenge">Predict Now →</button>`}
+        </div>
+        <div class="dp-horses">
+          ${dr.horses.slice(0,4).map(h=>`<div class="dp-horse"><div class="dp-dot" style="background:${h.color}"></div><div><div class="dp-hn">${esc(h.name)}</div><div class="dp-odds">${h.odds}</div></div></div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-hdr">
+        <h2>Top Riders</h2>
+        <button class="see-all" data-action="nav" data-page="leaderboard">See All →</button>
+      </div>
+      <div class="card mini-lb">
+        ${top5.map((p,i)=>`
+          <div class="mlb-row${p.isMe?' me':''}">
+            <span class="mlb-rank">${medals[i]||'#'+(i+1)}</span>
+            <span class="mlb-name">${esc(p.name)}${p.isMe?' (you)':''}</span>
+            <span class="mlb-coins">🪙 ${p.coins.toLocaleString()}</span>
+            <span class="mlb-str">🔥 ${p.streak}</span>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ════════════════════════════════════════════════
+   PAGE: CHALLENGE
+   ════════════════════════════════════════════════ */
+function pageChallenge(){
+  const race=RACES[getDailyRaceIdx()];
+  const key=getDailyKey();
+  const prevResult=U.dailyResults[key];
+  if(prevResult&&G.challengePhase==='pick'){ G.challengePhase='result'; }
+  const horse_pick_card=(h,idx)=>{
+    const isFav=h.oddsN&&h.oddsN<=3.5;
+    const sel=G.challengeSelected===h.id;
+    return `
+    <div class="hpc${sel?' selected':''}" style="--hc:${h.color};animation-delay:${idx*.08}s" data-action="pickHorse" data-horse="${h.id}">
+      <div class="hpc-top">
+        <div class="hpc-bar" style="background:${h.color}"></div>
+        <span class="hpc-num">#${h.number||idx+1}</span>
+        ${isFav?'<span class="hpc-fav">⭐ FAV</span>':''}
+        ${sel?'<div class="hpc-sel-mark">✓</div>':''}
+      </div>
+      <div class="hpc-main">
+        <div class="hpc-name">${esc(h.name)}</div>
+        <div class="hpc-jock">🏇 ${esc(h.jockey)}</div>
+        ${h.weight?`<div class="hpc-wt">⚖️ ${esc(h.weight)}${h.age?' · Age '+h.age:''}</div>`:''}
+      </div>
+      <div class="hpc-odds-block">
+        <div class="hpc-odds">${esc(h.odds)}</div>
+        <div class="hpc-odds-lbl">Odds</div>
+      </div>
+      ${h.form?`<div class="form-lbl">Last ${h.form.length} races</div><div class="form-pills">${h.form.map(f=>`<span class="fp ${f==='1st'?'w':f==='2nd'||f==='3rd'?'p':'o'}">${f}</span>`).join('')}</div>`:''}
+      <div class="sbar-wrap" style="margin-top:4px">
+        ${['speed','stamina','acceleration'].map(k=>`<div class="sbar-row"><span class="sbar-lbl">${{speed:'SPD',stamina:'STA',acceleration:'ACC'}[k]}</span><div class="sbar-track"><div class="sbar-fill" style="width:${h.stats[k]}%;background:${h.color}"></div></div><span class="sbar-val">${h.stats[k]}</span></div>`).join('')}
+      </div>
+    </div>`;
+  };
+
+  if(G.challengePhase==='pick'){
+    const sel=G.challengeSelected?race.horses.find(h=>h.id===G.challengeSelected):null;
+    return `<div class="pg">
+      <div class="ph"><h1>🎯 Daily Prediction</h1><p>Study the stats — pick today's winner</p></div>
+      <div class="card card-hi race-hdr">
+        <div class="race-flags">
+          <span class="badge b-${race.difficulty}">${race.difficulty?.toUpperCase()} DIFFICULTY</span>
+          ${race.grade?`<span class="badge b-common">${esc(race.grade)}</span>`:''}
+        </div>
+        <div class="race-title">${esc(race.name)}</div>
+        <div class="race-meta-grid">
+          <div class="race-meta-item">📍 ${esc(race.track)}</div>
+          <div class="race-meta-item">📏 ${esc(race.distance)}</div>
+          <div class="race-meta-item">🌿 ${esc(race.surface)}</div>
+          <div class="race-meta-item">☁️ ${esc(race.condition)}</div>
+          <div class="race-meta-item">📅 ${esc(race.date)}</div>
+          ${race.purse?`<div class="race-meta-item">💰 ${esc(race.purse)}</div>`:''}
+        </div>
+        ${race.description?`<div class="race-desc">${esc(race.description)}</div>`:''}
+        <div class="diff-hint">${race.difficulty==='easy'?'💡 Easy mode — look for the clear favourite in the odds!':'🔥 Hard mode — very close competition. Study the form and stats carefully!'}</div>
+      </div>
+      <div class="pick-title">Pick the winner ↓</div>
+      <div class="horses-grid">${race.horses.map((h,i)=>horse_pick_card(h,i)).join('')}</div>
+      <div class="pick-submit">
+        <div class="pick-hint">${sel?`You picked: <strong>${esc(sel.name)}</strong>`:'Tap a horse to select your pick'}</div>
+        <button class="btn btn-gold btn-lg" data-action="submitPick" ${!G.challengeSelected?'disabled':''}>🏁 Lock In My Pick!</button>
+      </div>
+    </div>`;
+  }
+
+  // Result phase
+  const res=G.challengeResult||prevResult;
+  const correctId=res?res.correctHorseId||race.winner:race.winner;
+  const isCorrect=res&&res.correct;
+  const alreadyDone=!!prevResult&&!G.challengeResult;
+  return `<div class="pg anim-in">
+    <div class="ph"><h1>🎯 Daily Prediction</h1><p>${alreadyDone?"Already completed today's challenge":'Results are in!'}</p></div>
+    <div class="result-wrap">
+      <div class="result-banner ${alreadyDone?'n':isCorrect?'c':'w'}">
+        <div class="result-emoji">${alreadyDone?'📋':isCorrect?'🎉':'😔'}</div>
+        <div class="result-text">${alreadyDone?'Already Completed':isCorrect?'CORRECT PICK!':'WRONG PICK'}</div>
+        <div class="result-sub">${alreadyDone?'Come back tomorrow for a new challenge!':(res?.coins>0?`+${res.coins} coins earned! Streak: ${res.streak}🔥`:'Better luck tomorrow! Streak reset.')}</div>
+      </div>
+      <div>
+        <div class="winner-title">🏆 Race Winner</div>
+        <div class="winner-grid">
+          ${race.horses.map((h,i)=>{
+            const win=h.id===correctId;
+            const wasPick=res&&res.horseId===h.id&&!win;
+            return `<div class="wh-card${win?' winner':''}${wasPick?' wrong':''}" style="animation-delay:${i*.1}s">
+              ${win?'<div class="crown-tag">👑 WINNER</div>':''}
+              ${wasPick?'<div class="pick-tag">Your Pick</div>':''}
+              <div class="wh-dot" style="background:${h.color}">${win?'🏆':''}</div>
+              <div class="wh-name">${esc(h.name)}</div>
+              <div class="wh-jock">🏇 ${esc(h.jockey)}</div>
+              <div class="wh-odds">${esc(h.odds)}</div>
+              ${win&&race.result?`<div class="wh-winner-details"><span>⏱ ${race.result.winTime}</span><span>📏 ${race.result.margin}</span></div>`:''}
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+      ${race.result?.positions?`
+      <div class="card placements">
+        <div class="plc-title">🏁 Full Race Result</div>
+        ${race.result.positions.map((hid,i)=>{const h=race.horses.find(x=>x.id===hid);if(!h)return'';const labels=['1st 🥇','2nd 🥈','3rd 🥉'];return`<div class="plc-row"><span class="plc-pos">${labels[i]||i+1+'th'}</span><span class="plc-name">${esc(h.name)}</span><span class="plc-jock">🏇 ${esc(h.jockey)}</span><span class="plc-odds">${esc(h.odds)}</span></div>`;}).join('')}
+        ${race.result.winTime||race.result.margin?`<div class="plc-footer">${race.result.winTime?`<span>⏱ ${race.result.winTime}</span>`:''}${race.result.margin?`<span>📏 ${race.result.margin}</span>`:''}</div>`:''}
+      </div>`:''}
+      <div class="card card-hi video-section">
+        <div class="vs-hdr">
+          <span>📺 Watch the Race</span>
+          ${!G.showVideo?`<button class="btn btn-outline" data-action="showVideo">▶ Load Video</button>`:''}
+        </div>
+        ${G.showVideo?`<div class="video-wrap"><iframe src="https://www.youtube.com/embed/${race.videoId}?start=${race.videoStart||0}&autoplay=1&mute=1" allowfullscreen></iframe></div>`:''}
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ════════════════════════════════════════════════
+   PAGE: STABLE
+   ════════════════════════════════════════════════ */
+function pageStable(){
+  const tabs=['My Horses','Upgrade','Breeding','Shop'];
+  const tab=G.stableTab;
+  const tabContent=()=>{
+    if(tab===0){
+      if(U.horses.length===0) return '<div class="empty-state">No horses yet! Visit the Shop to buy one.</div>';
+      return `<div class="horses-mgmt">${U.horses.map(h=>horseCardHTML(h)).join('')}</div>`;
+    }
+    if(tab===1){
+      return `
+        <div class="info-box"><p>💡 Upgrade your horse stats by 5 points each. Costs increase with each upgrade level. Max stat: 100.</p></div>
+        <div class="horses-mgmt">${U.horses.map(h=>horseCardHTML(h,{showUpgrade:true})).join('')}</div>`;
+    }
+    if(tab===2){
+      const p1=U.horses.find(h=>h.id===G.breedPick1);
+      const p2=U.horses.find(h=>h.id===G.breedPick2);
+      return `<div class="breed-panel">
+        <div class="card breed-info">
+          <h3>🧬 Horse Breeding</h3>
+          <p>Combine two horses to create a foal! Stats are inherited with variation.</p>
+          <div class="breed-rules">
+            <div class="breed-rule">💰 Cost: <strong>300 coins</strong></div>
+            <div class="breed-rule">⏰ Cooldown: <strong>1 hour</strong></div>
+            <div class="breed-rule">🍀 Rare: <strong>20%</strong></div>
+            <div class="breed-rule">💜 Epic: <strong>10%</strong></div>
+            <div class="breed-rule">👑 Legendary: <strong>5%</strong></div>
+          </div>
+        </div>
+        <div class="breed-parents">
+          <div class="bp-slot ${p1?'filled':'empty'}">
+            ${p1?`<div class="bp-name">${esc(p1.name)}</div><span class="badge b-${p1.rarity}">${p1.rarity}</span><button class="btn btn-ghost btn-sm" data-action="clearBreed1">✕ Remove</button>`:`<div class="bp-empty-lbl">Parent 1<br><span>Select below</span></div>`}
+          </div>
+          <div class="breed-x">×</div>
+          <div class="bp-slot ${p2?'filled':'empty'}">
+            ${p2?`<div class="bp-name">${esc(p2.name)}</div><span class="badge b-${p2.rarity}">${p2.rarity}</span><button class="btn btn-ghost btn-sm" data-action="clearBreed2">✕ Remove</button>`:`<div class="bp-empty-lbl">Parent 2<br><span>Select below</span></div>`}
+          </div>
+        </div>
+        ${p1&&p2?`<div class="breed-action"><button class="btn btn-gold btn-lg" data-action="doBreed" ${U.coins<300?'disabled':''}>🧬 Breed! (300 🪙)</button>${U.coins<300?'<div class="breed-no-coins">Need 300 coins</div>':''}</div>`:''}
+        ${G.breedResult?`<div class="breed-result anim-scale"><div class="breed-result-title">${G.breedResult.rarity==='legendary'?'👑 LEGENDARY!':G.breedResult.rarity==='epic'?'💜 EPIC!':G.breedResult.rarity==='rare'?'⭐ RARE!':'🐴 Foal Born!'}</div>${horseCardHTML(G.breedResult)}</div>`:''}
+        <div class="breed-select-title" style="margin-bottom:14px">Select two horses to breed:</div>
+        <div class="horses-mgmt">
+          ${U.horses.map(h=>horseCardHTML(h,{clickable:true,selected:h.id===G.breedPick1||h.id===G.breedPick2,cardAction:'breedSelect',showBreedOverlay:true})).join('')}
+        </div>
+      </div>`;
+    }
+    if(tab===3){
+      return `
+        <div class="info-box"><p>🛒 Spend your coins to acquire new horses! Each purchase adds directly to your stable.</p></div>
+        <div class="shop-grid">
+          ${SHOP_ITEMS.map(item=>`
+            <div class="shop-card">
+              <div class="shop-emoji anim-float">${item.emoji}</div>
+              <div class="shop-name">${esc(item.name)}</div>
+              <div class="shop-desc">${esc(item.desc)}</div>
+              <div class="shop-price">🪙 ${item.cost}</div>
+              <button class="btn btn-gold" data-action="buyHorse" data-item="${item.id}" ${U.coins<item.cost?'disabled':''}>Buy Now</button>
+            </div>`).join('')}
+        </div>`;
+    }
+  };
+  return `<div class="pg">
+    <div class="ph"><h1>🐎 My Stable</h1><p>${U.horses.length} horse${U.horses.length!==1?'s':''} in your stable</p></div>
+    <div class="tabs">
+      ${tabs.map((t,i)=>`<button class="tab${tab===i?' active':''}" data-action="stableTab" data-tab="${i}">${['🐴','⬆️','🧬','🛒'][i]} ${t}</button>`).join('')}
+    </div>
+    ${tabContent()}
+  </div>`;
+}
+
+/* ════════════════════════════════════════════════
+   PAGE: SIM RACE
+   ════════════════════════════════════════════════ */
+function pageSimRace(){
+  const phase=G.simPhase;
+  if(phase==='select'){
+    return `<div class="pg">
+      <div class="ph"><h1>🏁 Simulated Race</h1><p>Enter your horses — win coins based on placement</p></div>
+      <div class="card prize-table">
+        ${[['🥇 1st Place','+200 🪙',''],['🥈 2nd Place','+100 🪙',''],['🥉 3rd Place','+50 🪙',''],['Entry Fee','-50 🪙','fee']].map(([l,v,c])=>`<div class="pr-row ${c}"><span>${l}</span><span style="${c==='fee'?'color:var(--red)':'color:var(--gold);font-weight:700'}">${v}</span></div>`).join('')}
+        <div class="pr-note">AI opponents fill empty slots. Stats + randomness decide the winner!</div>
+      </div>
+      <div>
+        <div class="pick-title">Select horses to enter (${G.simSelected.length} selected)</div>
+        ${U.horses.length===0?'<div class="empty-state">No horses! Buy one from the Shop first.</div>':`
+        <div class="simrace-horses">
+          ${U.horses.map(h=>horseCardHTML(h,{clickable:true,selected:G.simSelected.includes(h.id),cardAction:'simSelect',compact:true})).join('')}
+        </div>
+        <div class="simrace-action">
+          <div class="sr-entry-info">Entry: <span style="color:var(--gold);font-weight:700">50 🪙</span> — Balance: <span style="color:var(--gold);font-weight:700">${U.coins.toLocaleString()} 🪙</span></div>
+          <button class="btn btn-gold btn-lg" data-action="startRace" ${G.simSelected.length===0||U.coins<50?'disabled':''}>🏁 Start Race!</button>
+        </div>`}
+      </div>
+    </div>`;
+  }
+  if(phase==='racing'){
+    const laneData=G.simData?.results||[];
+    return `<div class="pg anim-in">
+      <div class="ph"><h1>🏁 Race in Progress!</h1></div>
+      <div class="track-wrap">
+        <div class="track-title">🏇 RACE IN PROGRESS!</div>
+        <div class="track-lanes" id="track-lanes">
+          ${laneData.map((h,i)=>`
+            <div class="track-lane">
+              <div class="lane-label"><div class="lane-dot" style="background:${h.color||'#888'}"></div><span class="lane-name">${esc(h.name)}</span></div>
+              <div class="lane-track" id="lane-${h.id}">
+                <div class="lane-fill" id="fill-${h.id}" style="background:${h.color||'#888'};width:0%"></div>
+                <div class="lane-runner" id="runner-${h.id}" style="left:4px">🐎</div>
+                <div class="lane-finish"></div>
+              </div>
+              <span class="lane-pct" id="pct-${h.id}">0%</span>
+            </div>`).join('')}
+        </div>
+        <div class="track-vibe">The crowd roars! ⚡</div>
+      </div>
+    </div>`;
+  }
+  if(phase==='result'&&G.simData){
+    const d=G.simData;
+    const podiumOrder=[1,0,2];
+    const medals=['🥇 1st','🥈 2nd','🥉 3rd'];
+    const prizes=[200,100,50,0];
+    return `<div class="pg anim-in">
+      <div class="ph"><h1>🏁 Race Results</h1></div>
+      <div class="podium">
+        ${podiumOrder.map((i,vi)=>{
+          const h=d.results[i];if(!h)return'<div></div>';
+          const isMe=U.horses.some(uh=>uh.id===h.id);
+          const ppClass=['pp-2','pp-1','pp-3'][vi];
+          const blockColor=h.color||'#333';
+          return `<div class="podium-place ${ppClass}" style="animation-delay:${vi*.15}s">
+            <div class="pp-avatar">${isMe?'<div class="pp-yours">YOURS</div>':''}🐎</div>
+            <div class="pp-name">${esc(h.name)}</div>
+            <div class="pp-pos">${medals[i]}</div>
+            <div class="pp-block" style="background:${blockColor}"></div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="card result-tbl">
+        <div class="rt-title">Full Results</div>
+        ${d.results.map((h,i)=>{
+          const isMe=U.horses.some(uh=>uh.id===h.id);
+          return `<div class="rt-row${isMe?' mine':''}">
+            <span class="rt-pos">${['🥇','🥈','🥉','4th'][i]||i+1+'th'}</span>
+            <span class="rt-name">${esc(h.name)}${isMe?'<span class="yours-tag">YOUR HORSE</span>':''}</span>
+            <span class="rt-prize${isMe&&prizes[i]?' won':''}"> ${isMe?(prizes[i]?`+${prizes[i]} 🪙`:'—'):'—'}</span>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="card${d.won>0?' card-hi':''} race-summary-card${d.won>0?' won':''}">
+        <div class="sum-emoji">${d.won>0?'🏆':'😔'}</div>
+        <div class="sum-text">${d.won>0?`You won ${d.won} coins!`:'No prizes this time.'}</div>
+        <div class="sum-sub">${d.won>0?`Net: +${d.won-d.entryFee} after entry fee`:'Your horse needs more training!'}</div>
+        <button class="btn btn-outline" style="margin-top:14px" data-action="resetRace">🔄 Race Again</button>
+      </div>
+    </div>`;
+  }
+  return '<div class="pg"><div class="empty-state">Loading...</div></div>';
+}
+
+/* ════════════════════════════════════════════════
+   PAGE: LEADERBOARD
+   ════════════════════════════════════════════════ */
+function pageLeaderboard(){
+  const lb=getLeaderboard().sort((a,b)=>{
+    if(G.lbSort==='wins')return b.wins-a.wins;
+    if(G.lbSort==='streak')return b.streak-a.streak;
+    if(G.lbSort==='winRate')return b.winRate-a.winRate;
+    return b.coins-a.coins;
+  }).map((p,i)=>({...p,displayRank:i+1}));
+  const myRank=lb.findIndex(p=>p.isMe)+1;
+  const medals=['🥇','🥈','🥉'];
+  const sorts=[['coins','🪙 Coins'],['wins','🏆 Wins'],['streak','🔥 Streak'],['winRate','📈 Win Rate']];
+  return `<div class="pg">
+    <div class="ph">
+      <h1>🏆 Leaderboard</h1>
+      <p>${myRank>0?`You are ranked #${myRank} globally`:'Complete races to appear on the board'}</p>
+    </div>
+    <div class="lb-sort">
+      ${sorts.map(([k,l])=>`<button class="lb-sort-btn${G.lbSort===k?' active':''}" data-action="lbSort" data-sort="${k}">${l}</button>`).join('')}
+    </div>
+    ${lb.length>=3?`
+    <div class="lb-podium">
+      ${[1,0,2].map((i,vi)=>{
+        const p=lb[i];if(!p)return'<div></div>';
+        const t=tierLabel(p.coins);
+        const ppClass=['lbp-2','lbp-1','lbp-3'][vi];
+        return `<div class="lbp-place ${ppClass}" style="animation-delay:${vi*.15}s">
+          <div class="lbp-crown">${medals[i]}</div>
+          <div class="lbp-avatar">${p.name.charAt(0).toUpperCase()}</div>
+          <div class="lbp-name">${esc(p.name)}${p.isMe?' (you)':''}</div>
+          <div class="lbp-val">${G.lbSort==='coins'?'🪙 '+p.coins.toLocaleString():G.lbSort==='wins'?'🏆 '+p.wins:G.lbSort==='streak'?'🔥 '+p.streak:'📈 '+p.winRate+'%'}</div>
+          <div class="lbp-tier" style="color:${t.color}">${t.label}</div>
+          <div class="lbp-block"></div>
+        </div>`;
+      }).join('')}
+    </div>`:''}
+    <div class="card lb-table">
+      <div class="lb-head">
+        <span>Rank</span><span>Rider</span><span>Lvl</span>
+        <span class="lb-col-hide">Wins</span><span class="lb-col-hide">Win %</span>
+        <span>Score</span>
+      </div>
+      ${lb.map((p,i)=>{
+        const t=tierLabel(p.coins);
+        return `<div class="lb-row${p.isMe?' me':''}">
+          <span class="lb-rank">${i<3?medals[i]:'#'+p.displayRank}</span>
+          <span class="lb-name-col"><span class="lb-name-text">${esc(p.name)}${p.isMe?' (you)':''}</span><span class="lb-tier" style="color:${t.color}">${t.label}</span></span>
+          <span class="lb-level">Lv.${p.level}</span>
+          <span class="lb-col-hide lb-stat">${p.wins}</span>
+          <span class="lb-col-hide lb-stat">${p.predictions>0?p.winRate+'%':'—'}</span>
+          <span class="lb-score">${G.lbSort==='coins'?'🪙 '+p.coins.toLocaleString():G.lbSort==='wins'?'🏆 '+p.wins:G.lbSort==='streak'?'🔥 '+p.streak:'📈 '+p.winRate+'%'}</span>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="card my-stats-box">
+      <h3>📊 Your Stats</h3>
+      <div class="my-stat-grid">
+        ${[['🪙 Coins',U.coins.toLocaleString()],['🏆 Wins',U.totalWins],['🎯 Picks',U.totalPredictions],['📈 Win Rate',U.totalPredictions>0?Math.round(U.totalWins/U.totalPredictions*100)+'%':'—'],['🔥 Best Streak',U.maxStreak],['🐎 Horses',U.horses.length]].map(([l,v])=>`<div class="my-stat"><div class="my-stat-lbl">${l}</div><div class="my-stat-v">${v}</div></div>`).join('')}
+      </div>
+      ${myRank>0?`<div class="my-rank">Global Rank: <strong>#${myRank}</strong></div>`:''}
+    </div>
+  </div>`;
+}
+
+/* ════════════════════════════════════════════════
+   RENDER
+   ════════════════════════════════════════════════ */
+function render(){
+  const app=document.getElementById('app');
+  if(!U){
+    app.innerHTML=pageWelcome();
+    const inp=document.getElementById('rname');
+    if(inp) inp.focus();
+    return;
+  }
+  let pageHTML='';
+  if(G.page==='home') pageHTML=pageHome();
+  else if(G.page==='challenge') pageHTML=pageChallenge();
+  else if(G.page==='stable') pageHTML=pageStable();
+  else if(G.page==='simrace') pageHTML=pageSimRace();
+  else if(G.page==='leaderboard') pageHTML=pageLeaderboard();
+  app.innerHTML=navbar()+pageHTML;
+  if(G.page==='simrace'&&G.simPhase==='racing') startRaceAnimation();
+}
+
+/* ════════════════════════════════════════════════
+   RACE ANIMATION
+   ════════════════════════════════════════════════ */
+function startRaceAnimation(){
+  if(!G.simData) return;
+  const frames=G.simData.frames;
+  G.simFrame=0;
+  if(G.simTimer) clearInterval(G.simTimer);
+  G.simTimer=setInterval(()=>{
+    if(G.simFrame>=frames.length){
+      clearInterval(G.simTimer);
+      setTimeout(()=>{G.simPhase='result';render();},500);
+      return;
+    }
+    const frame=frames[G.simFrame];
+    frame.forEach(h=>{
+      const fill=document.getElementById('fill-'+h.id);
+      const runner=document.getElementById('runner-'+h.id);
+      const pct=document.getElementById('pct-'+h.id);
+      if(fill) fill.style.width=h.progress+'%';
+      if(runner) runner.style.left=`calc(${h.progress}% - 22px)`;
+      if(pct) pct.textContent=Math.round(h.progress)+'%';
+    });
+    G.simFrame++;
+  },70);
+}
+
+/* ════════════════════════════════════════════════
+   EVENTS
+   ════════════════════════════════════════════════ */
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-action]');
+  if(!el) return;
+  const action=el.dataset.action;
+
+  if(action==='register'){
+    const inp=document.getElementById('rname');
+    const name=(inp?.value||'').trim();
+    if(!name){inp?.focus();inp?.style.setProperty('border-color','var(--red)');return;}
+    createUser(name);
+    render();
+    toast(`🐎 Welcome, ${name}! You received a horse and 500 coins.`,'gold',5000);
+    return;
+  }
+
+  if(action==='nav'){
+    G.page=el.dataset.page;
+    if(G.page==='challenge'){G.challengePhase='pick';G.challengeSelected=null;G.challengeResult=null;G.showVideo=false;}
+    if(G.page==='simrace'){if(G.simPhase!=='select'){G.simPhase='select';G.simSelected=[];G.simData=null;}}
+    if(G.simTimer) clearInterval(G.simTimer);
+    window.scrollTo({top:0,behavior:'smooth'});
+    render();
+    return;
+  }
+
+  if(action==='stableTab'){ G.stableTab=+el.dataset.tab; G.breedResult=null; render(); return; }
+
+  if(action==='pickHorse'&&G.page==='challenge'){
+    G.challengeSelected=el.dataset.horse;
+    render();
+    return;
+  }
+
+  if(action==='submitPick'){
+    if(!G.challengeSelected) return;
+    const race=RACES[getDailyRaceIdx()];
+    const res=predictRace(race.id, G.challengeSelected);
+    if(res){
+      G.challengeResult={correct:res.correct,coins:res.coins,streak:res.streak,horseId:G.challengeSelected,correctHorseId:race.winner};
+      G.challengePhase='result';
+      if(res.correct) launchConfetti();
+      render();
+    }
+    return;
+  }
+
+  if(action==='showVideo'){ G.showVideo=true; render(); return; }
+
+  if(action==='upgrade'){
+    upgradeHorse(el.dataset.horse, el.dataset.stat);
+    return;
+  }
+
+  if(action==='breedSelect'){
+    const hid=el.closest('[data-horse-id]')?.dataset.horseId;
+    if(!hid) return;
+    const h=U.horses.find(x=>x.id===hid);
+    if(!h) return;
+    const now=Date.now();
+    if(h.breedCooldown&&h.breedCooldown>now){toast(`${h.name} is on breeding cooldown!`,'error');return;}
+    if(!G.breedPick1||G.breedPick1===hid){G.breedPick1=(G.breedPick1===hid?null:hid);}
+    else if(!G.breedPick2||G.breedPick2===hid){G.breedPick2=(G.breedPick2===hid?null:hid);}
+    else{G.breedPick2=hid;}
+    G.breedResult=null;
+    render();
+    return;
+  }
+
+  if(action==='clearBreed1'){G.breedPick1=null;G.breedResult=null;render();return;}
+  if(action==='clearBreed2'){G.breedPick2=null;G.breedResult=null;render();return;}
+
+  if(action==='doBreed'){
+    if(!G.breedPick1||!G.breedPick2) return;
+    const foal=breedHorses(G.breedPick1,G.breedPick2);
+    if(foal){
+      G.breedResult=foal;
+      G.breedPick1=null;G.breedPick2=null;
+      if(foal.rarity==='legendary'||foal.rarity==='epic') launchConfetti();
+      render();
+    }
+    return;
+  }
+
+  if(action==='buyHorse'){
+    buyHorse(el.dataset.item);
+    return;
+  }
+
+  if(action==='simSelect'){
+    const hid=el.closest('[data-horse-id]')?.dataset.horseId;
+    if(!hid) return;
+    G.simSelected=G.simSelected.includes(hid)?G.simSelected.filter(x=>x!==hid):[...G.simSelected,hid];
+    render();
+    return;
+  }
+
+  if(action==='startRace'){
+    if(G.simSelected.length===0||U.coins<50) return;
+    const data=simulateRaceLogic(G.simSelected);
+    if(!data) return;
+    G.simData=data;
+    G.simPhase='racing';
+    render();
+    if(data.won>0) setTimeout(()=>toast(`🏆 Your horse won ${data.won} coins!`,'gold',4000),4000);
+    return;
+  }
+
+  if(action==='resetRace'){
+    G.simPhase='select';G.simSelected=[];G.simData=null;
+    render();
+    return;
+  }
+
+  if(action==='lbSort'){G.lbSort=el.dataset.sort;render();return;}
+});
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!U){
+    const inp=document.getElementById('rname');
+    if(inp&&document.activeElement===inp){
+      const name=inp.value.trim();
+      if(name){createUser(name);render();toast(`🐎 Welcome, ${name}!`,'gold',4000);}
+    }
+  }
+});
+
+/* ════════════════════════════════════════════════
+   INIT
+   ════════════════════════════════════════════════ */
+load();
+render();
+</script>
+</body>
+</html>
