@@ -230,10 +230,17 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .plc-jock{color:var(--t3);font-size:11px}
 .plc-odds{color:var(--t3);font-size:11px;min-width:44px;text-align:right}
 .plc-footer{display:flex;gap:22px;padding:13px 19px;font-family:var(--fs);font-size:12px;color:var(--t2);border-top:1px solid var(--bdr)}
-.video-section{overflow:hidden;border-radius:var(--r3)}
-.vs-hdr{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid var(--bdr);font-family:var(--ff);font-size:17px;color:var(--t1)}
-.video-wrap{position:relative;padding-bottom:56.25%}
-.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+.video-card{border-radius:var(--r3);overflow:hidden;background:var(--bg3);border:1px solid var(--bdr)}
+.video-card-inner{position:relative;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:36px 24px;text-align:center;background:linear-gradient(135deg,var(--bg4),var(--bg3));border-bottom:1px solid var(--bdr)}
+.video-card-inner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(240,192,64,.07),transparent 65%);pointer-events:none}
+.video-thumb-ring{width:88px;height:88px;border-radius:50%;background:rgba(240,192,64,.1);border:2px solid rgba(240,192,64,.3);display:flex;align-items:center;justify-content:center;font-size:36px;position:relative;flex-shrink:0}
+.video-thumb-ring::after{content:'▶';position:absolute;font-size:20px;color:var(--gold)}
+.video-thumb-ring span{opacity:0}
+.video-card-title{font-family:var(--ff);font-size:18px;color:var(--t1);margin-bottom:4px}
+.video-card-sub{font-family:var(--fs);font-size:13px;color:var(--t2);margin-bottom:0}
+.video-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.video-card-footer{padding:13px 20px;display:flex;align-items:center;gap:10px;font-family:var(--fs);font-size:11px;color:var(--t3)}
+.video-card-footer span{flex:1}
 
 /* ── Stable ──────────────────────────────────── */
 .tabs{display:flex;gap:5px;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r3);padding:5px;margin-bottom:24px}
@@ -411,7 +418,9 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
    RACE DATA
    ════════════════════════════════════════════════ */
 const RACES = [
-  {id:'r01',name:'2015 Belmont Stakes',track:'Belmont Park, New York',distance:'1.5 miles (12f)',surface:'Dirt',condition:'Fast',date:'June 6, 2015',country:'USA',grade:'Grade I',purse:'$1,500,000',videoId:'dBsv2BmFiuA',videoStart:180,difficulty:'easy',winner:'h01_1',
+  {id:'r01',name:'2015 Belmont Stakes',track:'Belmont Park, New York',distance:'1.5 miles (12f)',surface:'Dirt',condition:'Fast',date:'June 6, 2015',country:'USA',grade:'Grade I',purse:'$1,500,000',
+   videoSearch:'2015 Belmont Stakes American Pharoah Triple Crown full race',
+   difficulty:'easy',winner:'h01_1',
    description:'The 147th running — American Pharoah bids to end a 37-year Triple Crown drought.',
    result:{positions:['h01_1','h01_4','h01_3','h01_2'],winTime:'2:26.65',margin:'5½ lengths'},
    horses:[
@@ -420,7 +429,9 @@ const RACES = [
     {id:'h01_3',name:'Mubtaahij',number:2,jockey:'Mike Smith',trainer:'Mike de Kock',odds:'9/2',oddsN:5.5,color:'#8b1a1a',form:['1st','1st','2nd','1st','3rd'],weight:'126 lbs',age:3,stats:{speed:88,stamina:85,acceleration:86,luck:82}},
     {id:'h01_4',name:'Tonalist',number:8,jockey:'John Velazquez',trainer:'Christophe Clement',odds:'15/1',oddsN:16,color:'#2a5298',form:['1st','3rd','2nd','4th','2nd'],weight:'126 lbs',age:4,stats:{speed:85,stamina:90,acceleration:80,luck:78}}
   ]},
-  {id:'r02',name:'2018 Cox Plate',track:'Moonee Valley, Melbourne',distance:'2040m',surface:'Turf',condition:'Good',date:'October 27, 2018',country:'Australia',grade:'Group 1',purse:'$3,000,000',videoId:'GWpPdEnlFok',videoStart:120,difficulty:'easy',winner:'h02_1',
+  {id:'r02',name:'2018 Cox Plate',track:'Moonee Valley, Melbourne',distance:'2040m',surface:'Turf',condition:'Good',date:'October 27, 2018',country:'Australia',grade:'Group 1',purse:'$3,000,000',
+   videoSearch:'Winx 2018 Cox Plate fourth consecutive full race',
+   difficulty:'easy',winner:'h02_1',
    description:'The great mare Winx goes for her 4th consecutive Cox Plate, chasing immortality.',
    result:{positions:['h02_1','h02_2','h02_3','h02_4'],winTime:'2:04.04',margin:'4 lengths'},
    horses:[
@@ -429,7 +440,9 @@ const RACES = [
     {id:'h02_3',name:'Humidor',number:7,jockey:'Damien Oliver',trainer:'Mathew Ellerton',odds:'8/1',oddsN:9,color:'#0f766e',form:['2nd','1st','3rd','2nd','2nd'],weight:'57 kg',age:6,stats:{speed:89,stamina:92,acceleration:85,luck:86}},
     {id:'h02_4',name:'Brutal',number:9,jockey:'Blake Shinn',trainer:'Mark Newnham',odds:'40/1',oddsN:41,color:'#be123c',form:['3rd','4th','2nd','5th','3rd'],weight:'55.5 kg',age:5,stats:{speed:83,stamina:85,acceleration:82,luck:75}}
   ]},
-  {id:'r03',name:'2019 Melbourne Cup',track:'Flemington, Melbourne',distance:'3200m',surface:'Turf',condition:'Good',date:'November 5, 2019',country:'Australia',grade:'Group 1',purse:'$7,750,000',videoId:'DP3y9HXx7T8',videoStart:200,difficulty:'hard',winner:'h03_1',
+  {id:'r03',name:'2019 Melbourne Cup',track:'Flemington, Melbourne',distance:'3200m',surface:'Turf',condition:'Good',date:'November 5, 2019',country:'Australia',grade:'Group 1',purse:'$7,750,000',
+   videoSearch:'2019 Melbourne Cup Vow And Declare full race',
+   difficulty:'hard',winner:'h03_1',
    description:'The race that stops a nation — 24 runners battle over 3200 metres.',
    result:{positions:['h03_1','h03_2','h03_3','h03_4','h03_5'],winTime:'3:17.30',margin:'½ length'},
    horses:[
@@ -439,7 +452,9 @@ const RACES = [
     {id:'h03_4',name:'Constantinople',number:3,jockey:'Hugh Bowman',trainer:'Chris Waller',odds:'7/1',oddsN:8,color:'#b45309',form:['2nd','1st','3rd','2nd','4th'],weight:'56 kg',age:5,stats:{speed:88,stamina:89,acceleration:84,luck:81}},
     {id:'h03_5',name:'Finche',number:8,jockey:'Ben Melham',trainer:'Chris Waller',odds:'20/1',oddsN:21,color:'#334155',form:['3rd','5th','2nd','6th','2nd'],weight:'56.5 kg',age:7,stats:{speed:84,stamina:92,acceleration:80,luck:77}}
   ]},
-  {id:'r04',name:'2021 The Everest',track:'Royal Randwick, Sydney',distance:'1200m',surface:'Turf',condition:'Good to Firm',date:'October 16, 2021',country:'Australia',grade:'Listed',purse:'$15,000,000',videoId:'ZtLpKUCZEXg',videoStart:60,difficulty:'hard',winner:'h04_1',
+  {id:'r04',name:'2021 The Everest',track:'Royal Randwick, Sydney',distance:'1200m',surface:'Turf',condition:'Good to Firm',date:'October 16, 2021',country:'Australia',grade:'Listed',purse:'$15,000,000',
+   videoSearch:'2021 The Everest Nature Strip full race Royal Randwick',
+   difficulty:'hard',winner:'h04_1',
    description:"World's richest turf race per runner — 12 elite sprinters at $1.25M per slot.",
    result:{positions:['h04_1','h04_2','h04_3','h04_4'],winTime:'1:09.27',margin:'Short ½ head'},
    horses:[
@@ -448,7 +463,9 @@ const RACES = [
     {id:'h04_3',name:'Classique Legend',number:9,jockey:'Tim Clark',trainer:'Les Bridge',odds:'7/2',oddsN:4.5,color:'#16a34a',form:['1st','2nd','1st','1st','2nd'],weight:'59 kg',age:6,stats:{speed:96,stamina:82,acceleration:95,luck:89}},
     {id:'h04_4',name:'Masked Crusader',number:4,jockey:'Kerrin McEvoy',trainer:'Chris Waller',odds:'8/1',oddsN:9,color:'#9333ea',form:['2nd','1st','3rd','2nd','1st'],weight:'57 kg',age:5,stats:{speed:93,stamina:80,acceleration:91,luck:85}}
   ]},
-  {id:'r05',name:'2019 Kentucky Derby',track:'Churchill Downs, Louisville',distance:'1¼ miles (10f)',surface:'Dirt',condition:'Sloppy',date:'May 4, 2019',country:'USA',grade:'Grade I',purse:'$3,000,000',videoId:'QxQHYqJmFBI',videoStart:120,difficulty:'hard',winner:'h05_1',
+  {id:'r05',name:'2019 Kentucky Derby',track:'Churchill Downs, Louisville',distance:'1¼ miles (10f)',surface:'Dirt',condition:'Sloppy',date:'May 4, 2019',country:'USA',grade:'Grade I',purse:'$3,000,000',
+   videoSearch:'2019 Kentucky Derby Country House disqualification full race',
+   difficulty:'hard',winner:'h05_1',
    description:'One of the most controversial Derbies ever — the apparent winner was disqualified!',
    result:{positions:['h05_1','h05_3','h05_4','h05_2'],winTime:'2:03.93',margin:'¾ length (after DQ)'},
    horses:[
@@ -457,7 +474,9 @@ const RACES = [
     {id:'h05_3',name:'Code Of Honor',number:14,jockey:'John Velazquez',trainer:'Claude McGaughey',odds:'6/1',oddsN:7,color:'#1e40af',form:['1st','3rd','2nd','1st','2nd'],weight:'126 lbs',age:3,stats:{speed:89,stamina:87,acceleration:88,luck:84}},
     {id:'h05_4',name:'Tacitus',number:10,jockey:'Jose Ortiz',trainer:'Bill Mott',odds:'8/1',oddsN:9,color:'#5b21b6',form:['1st','1st','2nd','2nd','1st'],weight:'126 lbs',age:3,stats:{speed:91,stamina:88,acceleration:89,luck:86}}
   ]},
-  {id:'r06',name:'2020 Prix de l\'Arc de Triomphe',track:'ParisLongchamp, France',distance:'2400m',surface:'Turf',condition:'Very Soft',date:'October 4, 2020',country:'France',grade:'Group 1',purse:'€5,000,000',videoId:'lpVzRyHwZYk',videoStart:150,difficulty:'hard',winner:'h06_1',
+  {id:'r06',name:'2020 Prix de l\'Arc de Triomphe',track:'ParisLongchamp, France',distance:'2400m',surface:'Turf',condition:'Very Soft',date:'October 4, 2020',country:'France',grade:'Group 1',purse:'€5,000,000',
+   videoSearch:'2020 Prix Arc de Triomphe Sottsass full race',
+   difficulty:'hard',winner:'h06_1',
    description:'Enable seeks an unprecedented third Arc — can she overcome the heavy ground?',
    result:{positions:['h06_1','h06_2','h06_3','h06_4'],winTime:'2:36.44',margin:'Short ½ head'},
    horses:[
@@ -466,7 +485,9 @@ const RACES = [
     {id:'h06_3',name:'Magical',number:7,jockey:'Ryan Moore',trainer:"Aidan O'Brien",odds:'4/1',oddsN:5,color:'#4c0519',form:['1st','2nd','1st','1st','2nd'],weight:'59 kg',age:6,stats:{speed:92,stamina:93,acceleration:90,luck:92}},
     {id:'h06_4',name:'Stradivarius',number:9,jockey:'Frankie Dettori',trainer:'John Gosden',odds:'12/1',oddsN:13,color:'#1c4532',form:['1st','1st','2nd','1st','3rd'],weight:'60 kg',age:6,stats:{speed:88,stamina:97,acceleration:85,luck:88}}
   ]},
-  {id:'r07',name:'2017 Cheltenham Gold Cup',track:'Cheltenham, UK',distance:'3m 2½f',surface:'Turf (Jumps)',condition:'Soft',date:'March 17, 2017',country:'UK',grade:'Grade 1',purse:'£625,000',videoId:'KnvqkR7BVJA',videoStart:300,difficulty:'hard',winner:'h07_1',
+  {id:'r07',name:'2017 Cheltenham Gold Cup',track:'Cheltenham, UK',distance:'3m 2½f',surface:'Turf (Jumps)',condition:'Soft',date:'March 17, 2017',country:'UK',grade:'Grade 1',purse:'£625,000',
+   videoSearch:'2017 Cheltenham Gold Cup Sizing John full race',
+   difficulty:'hard',winner:'h07_1',
    description:"Jump racing's greatest prize — five elite chasers battle over 26 fences.",
    result:{positions:['h07_1','h07_2','h07_3','h07_4','h07_5'],winTime:'6:35.90',margin:'1¼ lengths'},
    horses:[
@@ -476,7 +497,9 @@ const RACES = [
     {id:'h07_4',name:'Djakadam',number:2,jockey:'Ruby Walsh',trainer:'Willie Mullins',odds:'9/2',oddsN:5.5,color:'#1e3a5f',form:['2nd','2nd','1st','2nd','2nd'],weight:'11-10',age:9,stats:{speed:87,stamina:94,acceleration:84,luck:88}},
     {id:'h07_5',name:'Cue Card',number:5,jockey:'Paddy Brennan',trainer:'Colin Tizzard',odds:'5/1',oddsN:6,color:'#78350f',form:['1st','3rd','1st','1st','4th'],weight:'11-10',age:12,stats:{speed:87,stamina:93,acceleration:86,luck:82}}
   ]},
-  {id:'r08',name:'2022 Golden Eagle',track:'Rosehill Gardens, Sydney',distance:'1500m',surface:'Turf',condition:'Good',date:'November 5, 2022',country:'Australia',grade:'Group 1',purse:'$7,500,000',videoId:'xYz123AbCdE',videoStart:90,difficulty:'hard',winner:'h08_1',
+  {id:'r08',name:'2022 Golden Eagle',track:'Rosehill Gardens, Sydney',distance:'1500m',surface:'Turf',condition:'Good',date:'November 5, 2022',country:'Australia',grade:'Group 1',purse:'$7,500,000',
+   videoSearch:'2022 Golden Eagle Anamoe Rosehill full race',
+   difficulty:'hard',winner:'h08_1',
    description:"Sydney's premier spring mile — four elite horses clash in a $7.5M showdown.",
    result:{positions:['h08_1','h08_2','h08_3','h08_4'],winTime:'1:29.64',margin:'¾ length'},
    horses:[
@@ -485,7 +508,9 @@ const RACES = [
     {id:'h08_3',name:'Cascadian',number:7,jockey:'Hugh Bowman',trainer:'Chris Waller',odds:'4/1',oddsN:5,color:'#166534',form:['2nd','1st','3rd','2nd','2nd'],weight:'57.5 kg',age:5,stats:{speed:90,stamina:88,acceleration:89,luck:87}},
     {id:'h08_4',name:'Hinged',number:5,jockey:'Tim Clark',trainer:'Mark Newnham',odds:'10/1',oddsN:11,color:'#581c87',form:['3rd','2nd','1st','4th','3rd'],weight:'54 kg',age:4,stats:{speed:88,stamina:85,acceleration:87,luck:82}}
   ]},
-  {id:'r09',name:'2023 Doncaster Mile',track:'Royal Randwick, Sydney',distance:'1600m',surface:'Turf',condition:'Good to Firm',date:'April 1, 2023',country:'Australia',grade:'Group 1',purse:'$3,000,000',videoId:'DoncasterMile23x',videoStart:100,difficulty:'hard',winner:'h09_1',
+  {id:'r09',name:'2023 Doncaster Mile',track:'Royal Randwick, Sydney',distance:'1600m',surface:'Turf',condition:'Good to Firm',date:'April 1, 2023',country:'Australia',grade:'Group 1',purse:'$3,000,000',
+   videoSearch:'2023 Doncaster Mile Anamoe full race Sydney',
+   difficulty:'hard',winner:'h09_1',
    description:'The great Anamoe hunts a career-defining win in Sydney\'s premier mile.',
    result:{positions:['h09_1','h09_2','h09_3','h09_4'],winTime:'1:34.01',margin:'2 lengths'},
    horses:[
@@ -494,7 +519,9 @@ const RACES = [
     {id:'h09_3',name:'Forbidden Love',number:3,jockey:'Tim Clark',trainer:'Chris Waller',odds:'5/1',oddsN:6,color:'#be185d',form:['2nd','1st','2nd','1st','2nd'],weight:'56.5 kg',age:6,stats:{speed:90,stamina:88,acceleration:91,luck:89}},
     {id:'h09_4',name:'Tuvalu',number:7,jockey:'James Innes Jr.',trainer:'Joe Pride',odds:'8/1',oddsN:9,color:'#0369a1',form:['3rd','1st','4th','2nd','1st'],weight:'57 kg',age:5,stats:{speed:89,stamina:87,acceleration:88,luck:85}}
   ]},
-  {id:'r10',name:'2022 Caulfield Cup',track:'Caulfield, Melbourne',distance:'2400m',surface:'Turf',condition:'Good',date:'October 15, 2022',country:'Australia',grade:'Group 1',purse:'$5,000,000',videoId:'CaulfieldCup22z',videoStart:150,difficulty:'hard',winner:'h10_1',
+  {id:'r10',name:'2022 Caulfield Cup',track:'Caulfield, Melbourne',distance:'2400m',surface:'Turf',condition:'Good',date:'October 15, 2022',country:'Australia',grade:'Group 1',purse:'$5,000,000',
+   videoSearch:'2022 Caulfield Cup Gold Trip full race Melbourne',
+   difficulty:'hard',winner:'h10_1',
    description:'A key spring carnival prep — five elite stayers at the tight Caulfield track.',
    result:{positions:['h10_1','h10_2','h10_3','h10_4','h10_5'],winTime:'2:29.58',margin:'½ length'},
    horses:[
@@ -527,7 +554,7 @@ let G = {
   page: 'home',
   stableTab: 0,
   breedPick1: null, breedPick2: null, breedResult: null,
-  challengePhase: 'pick', challengeSelected: null, challengeResult: null, showVideo: false,
+  challengePhase: 'pick', challengeSelected: null, challengeResult: null,
   simPhase: 'select', simSelected: [], simData: null, simFrame: 0, simTimer: null,
   lbSort: 'coins',
 };
@@ -1033,12 +1060,21 @@ function pageChallenge(){
         ${race.result.positions.map((hid,i)=>{const h=race.horses.find(x=>x.id===hid);if(!h)return'';const labels=['1st 🥇','2nd 🥈','3rd 🥉'];return`<div class="plc-row"><span class="plc-pos">${labels[i]||i+1+'th'}</span><span class="plc-name">${esc(h.name)}</span><span class="plc-jock">🏇 ${esc(h.jockey)}</span><span class="plc-odds">${esc(h.odds)}</span></div>`;}).join('')}
         ${race.result.winTime||race.result.margin?`<div class="plc-footer">${race.result.winTime?`<span>⏱ ${race.result.winTime}</span>`:''}${race.result.margin?`<span>📏 ${race.result.margin}</span>`:''}</div>`:''}
       </div>`:''}
-      <div class="card card-hi video-section">
-        <div class="vs-hdr">
-          <span>📺 Watch the Race</span>
-          ${!G.showVideo?`<button class="btn btn-outline" data-action="showVideo">▶ Load Video</button>`:''}
+      <div class="video-card card-hi">
+        <div class="video-card-inner">
+          <div class="video-thumb-ring"><span>🎬</span></div>
+          <div>
+            <div class="video-card-title">📺 Watch the Full Race</div>
+            <div class="video-card-sub">${esc(race.name)} — ${esc(race.date)}</div>
+          </div>
+          <div class="video-btns">
+            <a class="btn btn-gold btn-lg" href="https://www.youtube.com/results?search_query=${encodeURIComponent(race.videoSearch||race.name+' full race')}" target="_blank" rel="noopener">▶ Find on YouTube</a>
+            <a class="btn btn-outline" href="https://www.youtube.com/results?search_query=${encodeURIComponent(race.name+' highlights')}" target="_blank" rel="noopener">✂️ Highlights</a>
+          </div>
         </div>
-        ${G.showVideo?`<div class="video-wrap"><iframe src="https://www.youtube.com/embed/${race.videoId}?start=${race.videoStart||0}&autoplay=1&mute=1" allowfullscreen></iframe></div>`:''}
+        <div class="video-card-footer">
+          <span>🔍 Opens a YouTube search for this exact race — pick the best result!</span>
+        </div>
       </div>
     </div>
   </div>`;
@@ -1339,7 +1375,7 @@ document.addEventListener('click',e=>{
 
   if(action==='nav'){
     G.page=el.dataset.page;
-    if(G.page==='challenge'){G.challengePhase='pick';G.challengeSelected=null;G.challengeResult=null;G.showVideo=false;}
+    if(G.page==='challenge'){G.challengePhase='pick';G.challengeSelected=null;G.challengeResult=null;}
     if(G.page==='simrace'){if(G.simPhase!=='select'){G.simPhase='select';G.simSelected=[];G.simData=null;}}
     if(G.simTimer) clearInterval(G.simTimer);
     window.scrollTo({top:0,behavior:'smooth'});
@@ -1367,8 +1403,6 @@ document.addEventListener('click',e=>{
     }
     return;
   }
-
-  if(action==='showVideo'){ G.showVideo=true; render(); return; }
 
   if(action==='upgrade'){
     upgradeHorse(el.dataset.horse, el.dataset.stat);
