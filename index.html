@@ -262,6 +262,16 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .winner-row{background:rgba(240,192,64,.07)!important}
 .your-pick-row{background:rgba(239,68,68,.05)!important}
 
+/* ── Dailymotion / Video Player ─────────────────── */
+.dm-player-wrap{border-radius:var(--r3);overflow:hidden;border:1px solid rgba(240,192,64,.22);margin-bottom:0;background:#000}
+.dm-player-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--bg4);border-bottom:1px solid var(--bdr)}
+.dm-player-header-title{font-family:var(--ff);font-size:16px;color:var(--gold)}
+.dm-player-header-note{font-family:var(--fs);font-size:11px;color:var(--t3)}
+.dm-player-screen{position:relative;padding-bottom:56.25%;background:#000}
+.dm-player-screen iframe{position:absolute;inset:0;width:100%;height:100%;border:none;display:block}
+.dm-player-footer{padding:11px 18px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--bg3);border-top:1px solid var(--bdr)}
+.dm-footer-label{font-family:var(--fs);font-size:11px;color:var(--t3);flex:1}
+
 /* ── Stable ──────────────────────────────────── */
 .tabs{display:flex;gap:5px;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r3);padding:5px;margin-bottom:24px}
 .tab{flex:1;padding:9px 14px;background:transparent;border:1px solid transparent;border-radius:var(--r2);font-family:var(--fs);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);cursor:pointer;transition:var(--tr)}
@@ -423,6 +433,43 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .info-box p{margin-bottom:7px}
 .info-box p:last-child{margin-bottom:0}
 .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:18px;font-family:var(--ff);color:var(--gold);font-size:16px;letter-spacing:.09em}
+
+/* ── Canvas Race Track ───────────────────────── */
+.canvas-race-wrap{border-radius:var(--r3);overflow:hidden;border:1px solid rgba(240,192,64,.25);background:#0d1f0d;margin-bottom:18px}
+.canvas-race-top{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:rgba(0,0,0,.4);border-bottom:1px solid rgba(255,255,255,.08)}
+.crt-title{font-family:var(--ff);font-size:16px;color:var(--gold);animation:pulsgold 1.2s ease-in-out infinite}
+.crt-time{font-family:var(--fs);font-size:22px;font-weight:700;color:#fff;letter-spacing:.06em}
+#race-canvas{display:block;width:100%;height:auto}
+.canvas-race-legend{display:flex;gap:10px;flex-wrap:wrap;padding:10px 16px;background:rgba(0,0,0,.35);border-top:1px solid rgba(255,255,255,.07)}
+.legend-item{display:flex;align-items:center;gap:6px;font-family:var(--fs);font-size:11px;color:rgba(255,255,255,.7)}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.race-pos-badge{position:absolute;top:0;right:0;width:24px;height:24px;border-radius:50%;background:var(--gold);color:#0a0800;font-family:var(--fs);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+
+/* ── Achievements ────────────────────────────── */
+.ach-panel{display:flex;flex-direction:column;gap:0;padding:0;overflow:hidden}
+.ach-row{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--bdr);transition:var(--tr)}
+.ach-row:last-child{border-bottom:none}
+.ach-row.unlocked{background:rgba(240,192,64,.04)}
+.ach-icon{font-size:28px;width:36px;flex-shrink:0;text-align:center}
+.ach-icon.locked{filter:grayscale(1);opacity:.3}
+.ach-info{flex:1;overflow:hidden}
+.ach-name{font-family:var(--fs);font-size:13px;font-weight:700;color:var(--t1);margin-bottom:2px}
+.ach-name.locked{color:var(--t3)}
+.ach-desc{font-family:var(--fs);font-size:11px;color:var(--t3)}
+.ach-reward{font-family:var(--fs);font-size:12px;color:var(--gold);font-weight:700;flex-shrink:0}
+.ach-reward.locked{color:var(--t3)}
+.ach-check{font-size:18px;flex-shrink:0}
+
+/* ── Sound toggle ────────────────────────────── */
+.sound-btn{position:fixed;bottom:22px;right:18px;z-index:200;width:44px;height:44px;border-radius:50%;background:var(--bg4);border:1px solid var(--bdr2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;transition:var(--tr);box-shadow:0 2px 12px rgba(0,0,0,.4)}
+.sound-btn:hover{border-color:var(--gold);background:var(--bg3)}
+
+/* ── New badge notification ──────────────────── */
+.ach-popup{position:fixed;bottom:76px;right:18px;z-index:9998;background:var(--bg4);border:1px solid var(--gold);border-radius:var(--r3);padding:14px 18px;display:flex;align-items:center;gap:12px;font-family:var(--fs);font-size:13px;color:var(--t1);animation:slideright .4s ease;box-shadow:0 4px 24px rgba(240,192,64,.2);max-width:280px}
+@keyframes slideright{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
+.ach-popup-icon{font-size:28px;flex-shrink:0}
+.ach-popup-title{font-weight:700;color:var(--gold);margin-bottom:2px}
+.ach-popup-sub{font-size:11px;color:var(--t2)}
 .loading .emoji{font-size:60px;animation:float 1.5s ease-in-out infinite}
 </style>
 </head>
@@ -716,7 +763,12 @@ function predictRace(raceId, horseId){
 
 function levelCheck(){
   const needed = U.level*200;
-  if(U.xp>=needed){U.xp-=needed;U.level++;U.coins+=100;toast(`🎉 Level Up! You're now Level ${U.level}! +100 coins bonus!`,'gold',4000);}
+  if(U.xp>=needed){
+    U.xp-=needed; U.level++; U.coins+=100;
+    toast(`🎉 Level Up! You're now Level ${U.level}! +100 coins bonus!`,'gold',4000);
+    SFX.levelup();
+    checkAchievements();
+  }
 }
 
 function upgradeHorse(horseId, stat){
@@ -1116,11 +1168,26 @@ function pageChallenge(){
           ${race.result.winTime?`<div class="plc-footer"><span>⏱ ${race.result.winTime}</span>${race.result.margin?`<span>📏 ${race.result.margin}</span>`:''}</div>`:''}
         </div>`:''}
         <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:8px 0">
-          <button class="btn btn-gold btn-lg" data-action="startReplay" data-race="${race.id}">🎬 Watch Race Replay</button>
+          <button class="btn btn-gold btn-lg" data-action="startReplay" data-race="${race.id}">🎬 Watch Animated Replay</button>
           <button class="btn btn-outline btn-lg" data-action="playAgain">🐎 Play Another Race</button>
         </div>
-        <div style="text-align:center">
-          <a class="btn btn-ghost btn-sm" href="https://www.youtube.com/results?search_query=${encodeURIComponent(race.videoSearch||race.name+' full race')}" target="_blank" rel="noopener">🔍 Find real race footage on YouTube</a>
+        <div class="dm-player-wrap">
+          <div class="dm-player-header">
+            <span class="dm-player-header-title">📺 Race Footage</span>
+            <span class="dm-player-header-note">Powered by Dailymotion · Best match shown automatically</span>
+          </div>
+          <div class="dm-player-screen">
+            <iframe
+              src="https://www.dailymotion.com/embed/search/${encodeURIComponent(race.videoSearch||race.name+' horse race full replay')}?autoplay=0"
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowfullscreen
+              title="${esc(race.name)} race footage"
+            ></iframe>
+          </div>
+          <div class="dm-player-footer">
+            <span class="dm-footer-label">🔍 Searching for: "${esc(race.videoSearch||race.name)}"</span>
+            <a class="btn btn-ghost btn-sm" href="https://www.dailymotion.com/search/${encodeURIComponent(race.videoSearch||race.name+' full race')}" target="_blank" rel="noopener">Open in Dailymotion ↗</a>
+          </div>
         </div>
       </div>
     </div>`;
@@ -1155,9 +1222,26 @@ function pageChallenge(){
         </div>
       </div>
       <div class="rr-standings" id="rr-standings"></div>
+      <div class="dm-player-wrap" id="rr-dm-player" style="display:none;margin-top:18px">
+        <div class="dm-player-header">
+          <span class="dm-player-header-title">📺 Real Race Footage</span>
+          <span class="dm-player-header-note">Dailymotion · best match</span>
+        </div>
+        <div class="dm-player-screen">
+          <iframe
+            src="https://www.dailymotion.com/embed/search/${encodeURIComponent(race.videoSearch||race.name+' horse race full replay')}?autoplay=0"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowfullscreen
+            title="${esc(race.name)} race footage"
+          ></iframe>
+        </div>
+        <div class="dm-player-footer">
+          <span class="dm-footer-label">🔍 "${esc(race.videoSearch||race.name)}"</span>
+          <a class="btn btn-ghost btn-sm" href="https://www.dailymotion.com/search/${encodeURIComponent(race.videoSearch||race.name+' full race')}" target="_blank" rel="noopener">Open Dailymotion ↗</a>
+        </div>
+      </div>
       <div class="rr-cta" id="rr-cta">
         <button class="btn btn-gold btn-lg" data-action="playAgain">🐎 Play Another Race</button>
-        <a class="btn btn-ghost btn-sm" href="https://www.youtube.com/results?search_query=${encodeURIComponent(race.videoSearch||race.name+' full race')}" target="_blank" rel="noopener">🔍 Watch real footage on YouTube</a>
       </div>
     </div>`;
   }
@@ -1169,8 +1253,10 @@ function pageChallenge(){
    PAGE: STABLE
    ════════════════════════════════════════════════ */
 function pageStable(){
-  const tabs=['My Horses','Upgrade','Breeding','Shop'];
+  const tabs=['My Horses','Upgrade','Breeding','Shop','Achievements'];
   const tab=G.stableTab;
+  const unlockedAch=U.unlockedAch||[];
+  const achCount=unlockedAch.length;
   const tabContent=()=>{
     if(tab===0){
       if(U.horses.length===0) return '<div class="empty-state">No horses yet! Visit the Shop to buy one.</div>';
@@ -1227,11 +1313,46 @@ function pageStable(){
             </div>`).join('')}
         </div>`;
     }
+    if(tab===3){
+      return `
+        <div class="info-box"><p>🛒 Spend your coins to acquire new horses! Each purchase adds directly to your stable.</p></div>
+        <div class="shop-grid">
+          ${SHOP_ITEMS.map(item=>`
+            <div class="shop-card">
+              <div class="shop-emoji anim-float">${item.emoji}</div>
+              <div class="shop-name">${esc(item.name)}</div>
+              <div class="shop-desc">${esc(item.desc)}</div>
+              <div class="shop-price">🪙 ${item.cost}</div>
+              <button class="btn btn-gold" data-action="buyHorse" data-item="${item.id}" ${U.coins<item.cost?'disabled':''}>Buy Now</button>
+            </div>`).join('')}
+        </div>`;
+    }
+    if(tab===4){
+      const totalReward=ACHIEVEMENTS.filter(a=>unlockedAch.includes(a.id)).reduce((s,a)=>s+a.reward,0);
+      return `
+        <div class="info-box" style="margin-bottom:18px">
+          <p>🏅 <strong style="color:var(--gold)">${achCount} / ${ACHIEVEMENTS.length}</strong> achievements unlocked · <strong style="color:var(--gold)">${totalReward.toLocaleString()} coins</strong> earned from achievements</p>
+        </div>
+        <div class="card ach-panel">
+          ${ACHIEVEMENTS.map(a=>{
+            const done=unlockedAch.includes(a.id);
+            return `<div class="ach-row${done?' unlocked':''}">
+              <div class="ach-icon${done?'':' locked'}">${a.icon}</div>
+              <div class="ach-info">
+                <div class="ach-name${done?'':' locked'}">${a.name}</div>
+                <div class="ach-desc">${esc(a.desc)}</div>
+              </div>
+              <div class="ach-reward${done?'':' locked'}">+${a.reward} 🪙</div>
+              <div class="ach-check">${done?'✅':'🔒'}</div>
+            </div>`;
+          }).join('')}
+        </div>`;
+    }
   };
   return `<div class="pg">
-    <div class="ph"><h1>🐎 My Stable</h1><p>${U.horses.length} horse${U.horses.length!==1?'s':''} in your stable</p></div>
+    <div class="ph"><h1>🐎 My Stable</h1><p>${U.horses.length} horse${U.horses.length!==1?'s':''} in your stable · ${achCount}/${ACHIEVEMENTS.length} achievements</p></div>
     <div class="tabs">
-      ${tabs.map((t,i)=>`<button class="tab${tab===i?' active':''}" data-action="stableTab" data-tab="${i}">${['🐴','⬆️','🧬','🛒'][i]} ${t}</button>`).join('')}
+      ${tabs.map((t,i)=>`<button class="tab${tab===i?' active':''}" data-action="stableTab" data-tab="${i}">${['🐴','⬆️','🧬','🛒','🏅'][i]} ${t}</button>`).join('')}
     </div>
     ${tabContent()}
   </div>`;
@@ -1266,21 +1387,15 @@ function pageSimRace(){
     const laneData=G.simData?.results||[];
     return `<div class="pg anim-in">
       <div class="ph"><h1>🏁 Race in Progress!</h1></div>
-      <div class="track-wrap">
-        <div class="track-title">🏇 RACE IN PROGRESS!</div>
-        <div class="track-lanes" id="track-lanes">
-          ${laneData.map((h,i)=>`
-            <div class="track-lane">
-              <div class="lane-label"><div class="lane-dot" style="background:${h.color||'#888'}"></div><span class="lane-name">${esc(h.name)}</span></div>
-              <div class="lane-track" id="lane-${h.id}">
-                <div class="lane-fill" id="fill-${h.id}" style="background:${h.color||'#888'};width:0%"></div>
-                <div class="lane-runner" id="runner-${h.id}" style="left:4px">🐎</div>
-                <div class="lane-finish"></div>
-              </div>
-              <span class="lane-pct" id="pct-${h.id}">0%</span>
-            </div>`).join('')}
+      <div class="canvas-race-wrap">
+        <div class="canvas-race-top">
+          <span class="crt-title">🏇 RACE IN PROGRESS</span>
+          <span class="crt-time" id="race-clock">0.00s</span>
         </div>
-        <div class="track-vibe">The crowd roars! ⚡</div>
+        <canvas id="race-canvas" style="width:100%;display:block"></canvas>
+        <div class="canvas-race-legend">
+          ${laneData.map(h=>`<div class="legend-item"><div class="legend-dot" style="background:${h.color||'#888'}"></div><span>${esc(h.name)}</span></div>`).join('')}
+        </div>
       </div>
     </div>`;
   }
@@ -1397,6 +1512,8 @@ function pageLeaderboard(){
    ════════════════════════════════════════════════ */
 function render(){
   const app=document.getElementById('app');
+  // Stop any running canvas animation before re-render
+  if(G.page!=='simrace'||G.simPhase!=='racing') stopCanvasRace();
   if(!U){
     app.innerHTML=pageWelcome();
     const inp=document.getElementById('rname');
@@ -1410,6 +1527,15 @@ function render(){
   else if(G.page==='simrace') pageHTML=pageSimRace();
   else if(G.page==='leaderboard') pageHTML=pageLeaderboard();
   app.innerHTML=navbar()+pageHTML;
+  // Inject persistent sound toggle button
+  if(!document.getElementById('sfx-btn')){
+    const btn=document.createElement('button');
+    btn.id='sfx-btn'; btn.className='sound-btn';
+    btn.textContent=_sfxEnabled?'🔊':'🔇';
+    btn.title='Toggle sound';
+    btn.onclick=toggleSFX;
+    document.body.appendChild(btn);
+  }
   if(G.page==='simrace'&&G.simPhase==='racing') startRaceAnimation();
 }
 
@@ -1418,26 +1544,11 @@ function render(){
    ════════════════════════════════════════════════ */
 function startRaceAnimation(){
   if(!G.simData) return;
-  const frames=G.simData.frames;
-  G.simFrame=0;
-  if(G.simTimer) clearInterval(G.simTimer);
-  G.simTimer=setInterval(()=>{
-    if(G.simFrame>=frames.length){
-      clearInterval(G.simTimer);
-      setTimeout(()=>{G.simPhase='result';render();},500);
-      return;
-    }
-    const frame=frames[G.simFrame];
-    frame.forEach(h=>{
-      const fill=document.getElementById('fill-'+h.id);
-      const runner=document.getElementById('runner-'+h.id);
-      const pct=document.getElementById('pct-'+h.id);
-      if(fill) fill.style.width=h.progress+'%';
-      if(runner) runner.style.left=`calc(${h.progress}% - 22px)`;
-      if(pct) pct.textContent=Math.round(h.progress)+'%';
-    });
-    G.simFrame++;
-  },70);
+  const horses=G.simData.results; // results have id,name,color,position
+  startCanvasRace(horses, G.simData.results, ()=>{
+    G.simPhase='result';
+    render();
+  });
 }
 
 /* ════════════════════════════════════════════════
@@ -1557,6 +1668,188 @@ function showReplayFinish(race){
   // Show Play Again button
   const ctaEl=document.getElementById('rr-cta');
   if(ctaEl) ctaEl.classList.add('show');
+
+  // Reveal the real race footage player
+  const dmEl=document.getElementById('rr-dm-player');
+  if(dmEl) dmEl.style.display='block';
+}
+
+/* ════════════════════════════════════════════════
+   ACHIEVEMENTS
+   ════════════════════════════════════════════════ */
+const ACHIEVEMENTS = [
+  {id:'first_pick',  icon:'🎯', name:'First Pick',       desc:'Make your first race prediction',          reward:50,  check:u=>u.totalPredictions>=1},
+  {id:'first_win',   icon:'🏆', name:'Winner!',          desc:'Correctly predict a race winner',          reward:100, check:u=>u.totalWins>=1},
+  {id:'hot_streak',  icon:'🔥', name:'On Fire',          desc:'Build a 3-win prediction streak',          reward:200, check:u=>u.maxStreak>=3},
+  {id:'streak_5',    icon:'⚡', name:'Lightning Picker', desc:'Reach a 5-win streak',                     reward:500, check:u=>u.maxStreak>=5},
+  {id:'rich',        icon:'🪙', name:'Minted',           desc:'Accumulate 2,000 coins',                   reward:100, check:u=>u.coins>=2000},
+  {id:'very_rich',   icon:'💰', name:'Coin Lord',        desc:'Accumulate 5,000 coins',                   reward:300, check:u=>u.coins>=5000},
+  {id:'ten_picks',   icon:'📊', name:'Form Student',     desc:'Make 10 total predictions',                reward:150, check:u=>u.totalPredictions>=10},
+  {id:'fifty_picks', icon:'📈', name:'Racing Expert',    desc:'Make 50 total predictions',                reward:400, check:u=>u.totalPredictions>=50},
+  {id:'breeder',     icon:'🧬', name:'Breeder',          desc:'Breed your first horse',                   reward:200, check:u=>(u.horses||[]).some(h=>h.parents)},
+  {id:'rare_foal',   icon:'⭐', name:'Lucky Genes',      desc:'Breed a rare or better horse',             reward:300, check:u=>(u.horses||[]).some(h=>h.parents&&['rare','epic','legendary'].includes(h.rarity))},
+  {id:'epic_foal',   icon:'💜', name:'Epic Bloodline',   desc:'Breed an epic or legendary horse',         reward:600, check:u=>(u.horses||[]).some(h=>h.parents&&['epic','legendary'].includes(h.rarity))},
+  {id:'level5',      icon:'⬆️', name:'Rising Star',      desc:'Reach Level 5',                            reward:250, check:u=>u.level>=5},
+  {id:'level10',     icon:'🌟', name:'Champion Rider',   desc:'Reach Level 10',                           reward:600, check:u=>u.level>=10},
+  {id:'sim_win',     icon:'🏁', name:'Race Winner',      desc:'Win your first simulated race',            reward:100, check:u=>(u.horses||[]).some(h=>h.wins>0)},
+  {id:'five_horses', icon:'🐎', name:'Stable Master',    desc:'Own 5 horses',                             reward:200, check:u=>(u.horses||[]).length>=5},
+  {id:'sharp',       icon:'🎱', name:'Sharp Eye',        desc:'Hit 60%+ win rate over 10+ predictions',  reward:400, check:u=>u.totalPredictions>=10&&u.totalWins/u.totalPredictions>=0.6},
+];
+
+function checkAchievements(){
+  if(!U) return;
+  if(!U.unlockedAch) U.unlockedAch=[];
+  const newOnes=[];
+  ACHIEVEMENTS.forEach(a=>{
+    if(!U.unlockedAch.includes(a.id) && a.check(U)){
+      U.unlockedAch.push(a.id);
+      U.coins+=a.reward;
+      newOnes.push(a);
+    }
+  });
+  if(newOnes.length){ save(); newOnes.forEach((a,i)=>setTimeout(()=>showAchPopup(a),i*1900)); }
+}
+
+function showAchPopup(a){
+  const el=document.createElement('div');
+  el.className='ach-popup';
+  el.innerHTML=`<div class="ach-popup-icon">${a.icon}</div><div><div class="ach-popup-title">Achievement Unlocked!</div><div style="font-family:var(--fs);font-size:13px;font-weight:700">${a.name}</div><div class="ach-popup-sub">+${a.reward} coins</div></div>`;
+  document.body.appendChild(el);
+  SFX.achievement();
+  setTimeout(()=>{el.style.transition='opacity .4s';el.style.opacity='0';setTimeout(()=>el.remove(),420);},4200);
+}
+
+/* ════════════════════════════════════════════════
+   SOUND ENGINE  (Web Audio API — zero dependencies)
+   ════════════════════════════════════════════════ */
+let _sfxEnabled=localStorage.getItem('hh_sfx')!=='0';
+const SFX={
+  _ctx:null,
+  _g(){if(!this._ctx)this._ctx=new(window.AudioContext||window.webkitAudioContext)();return this._ctx;},
+  _p(fn){if(!_sfxEnabled)return;try{fn(this._g());}catch(e){}},
+  coin(){ this._p(ctx=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.setValueAtTime(880,ctx.currentTime);o.frequency.exponentialRampToValueAtTime(1320,ctx.currentTime+.08);g.gain.setValueAtTime(.22,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.22);o.start();o.stop(ctx.currentTime+.22);}); },
+  correct(){ this._p(ctx=>{[523,659,784,1047].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='triangle';o.frequency.value=f;const t=ctx.currentTime+i*.09;g.gain.setValueAtTime(.2,t);g.gain.exponentialRampToValueAtTime(.001,t+.28);o.start(t);o.stop(t+.3);});}); },
+  wrong(){ this._p(ctx=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sawtooth';o.frequency.setValueAtTime(200,ctx.currentTime);o.frequency.linearRampToValueAtTime(100,ctx.currentTime+.3);g.gain.setValueAtTime(.16,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.35);o.start();o.stop(ctx.currentTime+.35);}); },
+  pick(){ this._p(ctx=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.setValueAtTime(440,ctx.currentTime);o.frequency.exponentialRampToValueAtTime(550,ctx.currentTime+.06);g.gain.setValueAtTime(.1,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.13);o.start();o.stop(ctx.currentTime+.13);}); },
+  start(){ this._p(ctx=>{[[392,.0],[494,.12],[587,.22],[784,.32]].forEach(([f,t])=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sawtooth';o.frequency.value=f;const T=ctx.currentTime+t;g.gain.setValueAtTime(.18,T);g.gain.exponentialRampToValueAtTime(.001,T+.22);o.start(T);o.stop(T+.24);});}); },
+  crowd(v=1){ this._p(ctx=>{const buf=ctx.createBuffer(1,ctx.sampleRate*.55,ctx.sampleRate),d=buf.getChannelData(0);let l=0;for(let i=0;i<d.length;i++)d[i]=l=(Math.random()*2-1)*.13*v+l*.91;const s=ctx.createBufferSource(),g=ctx.createGain();s.buffer=buf;s.connect(g);g.connect(ctx.destination);g.gain.setValueAtTime(0,ctx.currentTime);g.gain.linearRampToValueAtTime(.45*v,ctx.currentTime+.1);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.55);s.start();}); },
+  levelup(){ this._p(ctx=>{[[523,.0],[659,.1],[784,.2],[1047,.3],[1319,.42]].forEach(([f,t])=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='triangle';o.frequency.value=f;const T=ctx.currentTime+t;g.gain.setValueAtTime(.28,T);g.gain.exponentialRampToValueAtTime(.001,T+.35);o.start(T);o.stop(T+.38);});}); },
+  achievement(){ this._p(ctx=>{[880,1100,1320,1760].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.value=f;const T=ctx.currentTime+i*.07;g.gain.setValueAtTime(.17,T);g.gain.exponentialRampToValueAtTime(.001,T+.3);o.start(T);o.stop(T+.32);});}); },
+};
+function toggleSFX(){
+  _sfxEnabled=!_sfxEnabled;
+  localStorage.setItem('hh_sfx',_sfxEnabled?'1':'0');
+  const btn=document.getElementById('sfx-btn');
+  if(btn) btn.textContent=_sfxEnabled?'🔊':'🔇';
+  if(_sfxEnabled) SFX.coin();
+}
+
+/* ════════════════════════════════════════════════
+   CANVAS RACE ENGINE
+   ════════════════════════════════════════════════ */
+let _raceRAF=null, _raceStart=null;
+function stopCanvasRace(){if(_raceRAF){cancelAnimationFrame(_raceRAF);_raceRAF=null;}_raceStart=null;}
+
+function startCanvasRace(horses,results,onFinish){
+  stopCanvasRace();
+  const canvas=document.getElementById('race-canvas');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  const W=Math.min(canvas.parentElement.clientWidth||700,1100);
+  const LANE_H=52, PT=30, PB=16;
+  const H=PT+horses.length*LANE_H+PB;
+  canvas.width=W; canvas.height=H;
+  const TL=184, FX=W-44, TW=FX-TL;
+  const DURATION=8800;
+
+  function prog(horseId,t){
+    const r=results.find(x=>x.id===horseId);
+    const rank=r?r.position-1:horses.length-1;
+    const maxF=1-rank*(0.042/Math.max(1,horses.length-1));
+    const ease=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+    return Math.max(0,Math.min(maxF,maxF*ease+0.022*Math.sin(t*21+rank*4)*Math.sin(t*8+rank*2.1)));
+  }
+
+  function frame(ts){
+    if(!_raceStart) _raceStart=ts;
+    const t=Math.min(1,(ts-_raceStart)/DURATION);
+    const clk=document.getElementById('race-clock');
+    if(clk) clk.textContent=((t*DURATION/1000)).toFixed(2)+'s';
+
+    ctx.clearRect(0,0,W,H);
+    // Background
+    ctx.fillStyle='#0c1e0c'; ctx.fillRect(0,0,W,H);
+    // Top progress bar
+    ctx.fillStyle='rgba(255,255,255,.07)'; ctx.fillRect(TL,5,TW,5);
+    ctx.fillStyle='rgba(240,192,64,.75)'; ctx.fillRect(TL,5,TW*t,5);
+
+    horses.forEach((h,i)=>{
+      const y=PT+i*LANE_H;
+      // Lane turf
+      ctx.fillStyle=i%2?'rgba(18,80,18,.22)':'rgba(26,110,26,.18)';
+      ctx.fillRect(TL,y,TW,LANE_H);
+      ctx.fillStyle='rgba(255,255,255,.05)';
+      ctx.fillRect(TL,y+LANE_H-1,TW,1);
+
+      // Name panel
+      ctx.fillStyle='rgba(0,0,0,.55)'; ctx.fillRect(0,y+1,TL-2,LANE_H-2);
+      // Number circle
+      ctx.fillStyle=h.color||'#888';
+      ctx.beginPath(); ctx.arc(15,y+LANE_H/2,11,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='#fff'; ctx.font='bold 10px monospace';
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(String(i+1),15,y+LANE_H/2);
+      // Name
+      ctx.fillStyle='rgba(240,220,180,.92)'; ctx.font='bold 11px sans-serif';
+      ctx.textAlign='left'; ctx.textBaseline='middle';
+      ctx.fillText((h.name.length>17?h.name.slice(0,16)+'…':h.name),32,y+LANE_H/2);
+
+      // Horse on track
+      const p=prog(h.id,t);
+      const hx=TL+p*TW;
+      const bob=Math.sin(ts/110+i*1.4)*2.2;
+      // Shadow
+      ctx.fillStyle='rgba(0,0,0,.28)';
+      ctx.beginPath(); ctx.ellipse(hx,y+LANE_H-7,16,4,0,0,Math.PI*2); ctx.fill();
+      // Silk
+      ctx.fillStyle=h.color||'#888';
+      ctx.beginPath(); ctx.arc(hx,y+LANE_H/2,10,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,.35)'; ctx.lineWidth=1.5; ctx.stroke();
+      // Emoji
+      ctx.font='19px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('🐎',hx,y+LANE_H/2-1+bob);
+
+      // Position badge (fades in near end)
+      if(t>0.84){
+        const alpha=Math.min(1,(t-0.84)/0.1);
+        const r=results.find(x=>x.id===h.id);
+        if(r){
+          ctx.globalAlpha=alpha;
+          ctx.fillStyle=['#f0c040','#aaaaaa','#cd7f32','#555555'][r.position-1]||'#444';
+          ctx.beginPath(); ctx.arc(FX+22,y+LANE_H/2,12,0,Math.PI*2); ctx.fill();
+          ctx.fillStyle='#fff'; ctx.font='bold 10px monospace';
+          ctx.textAlign='center'; ctx.textBaseline='middle';
+          ctx.fillText(r.position,FX+22,y+LANE_H/2);
+          ctx.globalAlpha=1;
+        }
+      }
+    });
+
+    // Finish line (checkered)
+    for(let s=0;s<16;s++){
+      ctx.fillStyle=s%2?'#000':'#fff';
+      ctx.fillRect(FX,PT+s*((H-PT-PB)/16),4,(H-PT-PB)/16);
+    }
+    ctx.fillStyle='rgba(240,192,64,.9)'; ctx.font='bold 10px monospace';
+    ctx.textAlign='center'; ctx.textBaseline='bottom';
+    ctx.fillText('FINISH',FX+2,PT-2);
+
+    if(t<1){ _raceRAF=requestAnimationFrame(frame); }
+    else { SFX.crowd(1.5); setTimeout(()=>onFinish&&onFinish(),700); }
+  }
+  SFX.start();
+  setTimeout(()=>SFX.crowd(.7),350);
+  _raceRAF=requestAnimationFrame(frame);
 }
 
 
@@ -1572,6 +1865,8 @@ document.addEventListener('click',e=>{
     createUser(name);
     render();
     toast(`🐎 Welcome, ${name}! You received a horse and 500 coins.`,'gold',5000);
+    SFX.correct();
+    setTimeout(()=>checkAchievements(), 800);
     return;
   }
 
@@ -1593,6 +1888,7 @@ document.addEventListener('click',e=>{
   if(action==='stableTab'){ G.stableTab=+el.dataset.tab; G.breedResult=null; render(); return; }
 
   if(action==='pickHorse'&&G.page==='challenge'){
+    SFX.pick();
     G.challengeSelected=el.dataset.horse;
     render();
     return;
@@ -1621,7 +1917,14 @@ document.addEventListener('click',e=>{
       if(res){
         G.challengeResult={correct:res.correct,coins:res.coins,streak:res.streak,horseId:G.challengeSelected,correctHorseId:race.winner};
         G.challengePhase='result';
-        if(res.correct) launchConfetti();
+        if(res.correct){
+          launchConfetti();
+          SFX.correct();
+          if(res.coins>0) setTimeout(()=>SFX.coin(),400);
+        } else {
+          SFX.wrong();
+        }
+        checkAchievements();
         render();
         window.scrollTo({top:0,behavior:'smooth'});
       }
@@ -1647,6 +1950,7 @@ document.addEventListener('click',e=>{
 
   if(action==='upgrade'){
     upgradeHorse(el.dataset.horse, el.dataset.stat);
+    SFX.coin();
     return;
   }
 
@@ -1674,7 +1978,9 @@ document.addEventListener('click',e=>{
     if(foal){
       G.breedResult=foal;
       G.breedPick1=null;G.breedPick2=null;
-      if(foal.rarity==='legendary'||foal.rarity==='epic') launchConfetti();
+      if(foal.rarity==='legendary'||foal.rarity==='epic'){ launchConfetti(); SFX.levelup(); }
+      else { SFX.coin(); }
+      checkAchievements();
       render();
     }
     return;
@@ -1682,6 +1988,8 @@ document.addEventListener('click',e=>{
 
   if(action==='buyHorse'){
     buyHorse(el.dataset.item);
+    SFX.coin();
+    checkAchievements();
     return;
   }
 
@@ -1700,7 +2008,12 @@ document.addEventListener('click',e=>{
     G.simData=data;
     G.simPhase='racing';
     render();
-    if(data.won>0) setTimeout(()=>toast(`🏆 Your horse won ${data.won} coins!`,'gold',4000),4000);
+    if(data.won>0){
+      setTimeout(()=>{toast(`🏆 Your horse won ${data.won} coins!`,'gold',4000);SFX.correct();},8800);
+      setTimeout(()=>checkAchievements(),9200);
+    } else {
+      setTimeout(()=>checkAchievements(),9200);
+    }
     return;
   }
 
@@ -1729,6 +2042,8 @@ document.addEventListener('keydown',e=>{
 load();
 // Migrate old saves that have dailyResults (clean it out)
 if(U && U.dailyResults) { delete U.dailyResults; save(); }
+// Run achievements check on load in case existing save qualifies
+if(U) { setTimeout(()=>checkAchievements(), 1500); }
 render();
 </script>
 </body>
