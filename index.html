@@ -238,6 +238,47 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .suspense-progress{width:260px;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
 .suspense-bar{height:100%;background:linear-gradient(90deg,var(--gold3),var(--gold));border-radius:3px;width:0%;transition:width .12s linear}
 
+/* ── Watch Phase ─────────────────────────────── */
+.watch-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.watch-race-title{font-family:var(--ff);font-size:19px;color:var(--gold)}
+.watch-meta{font-family:var(--fs);font-size:12px;color:var(--t3)}
+.watch-canvas-wrap{border-radius:var(--r3);overflow:hidden;border:1px solid rgba(240,192,64,.25);background:#0c1e0c;margin-bottom:14px}
+.watch-canvas-top{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:rgba(0,0,0,.4);border-bottom:1px solid rgba(255,255,255,.07)}
+.watch-canvas-label{font-family:var(--ff);font-size:14px;color:var(--gold);animation:pulsgold 1.4s ease-in-out infinite}
+.watch-clock{font-family:var(--fs);font-size:20px;font-weight:700;color:#fff;letter-spacing:.06em}
+#watch-canvas{display:block;width:100%;height:auto}
+.watch-legend{display:flex;gap:8px;flex-wrap:wrap;padding:9px 14px;background:rgba(0,0,0,.35);border-top:1px solid rgba(255,255,255,.07)}
+.wl-item{display:flex;align-items:center;gap:5px;font-family:var(--fs);font-size:11px;color:rgba(255,255,255,.75)}
+.wl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+
+/* ── Pick Phase (paused at straight) ─────────── */
+.straight-banner{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 18px;background:linear-gradient(135deg,rgba(239,68,68,.18),rgba(180,30,30,.1));border:1px solid rgba(239,68,68,.4);border-radius:var(--r2);margin-bottom:16px;animation:pulsgold 1s ease-in-out infinite}
+.sb-icon{font-size:26px}
+.sb-text{font-family:var(--ff);font-size:17px;color:#ff6b6b;letter-spacing:.04em}
+.sb-sub{font-family:var(--fs);font-size:12px;color:var(--t2);margin-top:2px}
+.frozen-wrap{position:relative;border-radius:var(--r3);overflow:hidden;margin-bottom:16px;border:2px solid rgba(239,68,68,.5)}
+.frozen-wrap img{display:block;width:100%;height:auto}
+.frozen-badge{position:absolute;top:10px;right:10px;background:rgba(239,68,68,.9);color:#fff;font-family:var(--fs);font-size:11px;font-weight:800;letter-spacing:.1em;padding:4px 10px;border-radius:100px}
+.pfr-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+@media(max-width:500px){.pfr-grid{grid-template-columns:1fr}}
+.pfr-card{background:var(--bg3);border:2px solid var(--bdr);border-radius:var(--r3);padding:12px 14px;cursor:pointer;transition:var(--tr);display:flex;align-items:center;gap:10px;position:relative;overflow:hidden}
+.pfr-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--hc,#888)}
+.pfr-card:hover{border-color:var(--bdr2);background:var(--bg4);transform:translateY(-2px)}
+.pfr-card.sel{border-color:var(--gold);background:rgba(240,192,64,.08);box-shadow:0 0 0 2px rgba(240,192,64,.2)}
+.pfr-pos{font-family:var(--fs);font-size:12px;font-weight:800;color:var(--gold);min-width:30px;flex-shrink:0;text-align:center}
+.pfr-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.pfr-info{flex:1;overflow:hidden;min-width:0}
+.pfr-name{font-family:var(--fs);font-size:13px;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pfr-jock{font-family:var(--fs);font-size:11px;color:var(--t3)}
+.pfr-odds{font-family:var(--fs);font-size:11px;color:var(--t2);font-weight:700}
+.pfr-check{font-size:18px;color:var(--gold);flex-shrink:0}
+.pick-lock-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:12px 0}
+.pick-lock-hint{font-family:var(--fs);font-size:13px;color:var(--t2)}
+
+/* ── Resume Phase ─────────────────────────────── */
+.resume-banner{display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 18px;background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.3);border-radius:var(--r2);margin-bottom:14px}
+.resume-horse-name{font-family:var(--ff);font-size:16px;color:var(--gold)}
+
 /* ── Race Replay Simulation ─────────────────── */
 .rr-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:18px}
 .rr-title{font-family:var(--ff);font-size:20px;color:var(--gold)}
@@ -645,15 +686,23 @@ let G = {
   page: 'home',
   stableTab: 0,
   breedPick1: null, breedPick2: null, breedResult: null,
-  challengePhase: 'pick',   // 'pick' | 'suspense' | 'result' | 'simulation'
-  challengeRaceId: null,    // active race ID for current challenge
+  challengePhase: 'watch',   // 'watch' | 'pick' | 'resume' | 'result'
+  challengeRaceId: null,
   challengeSelected: null,
   challengeResult: null,
-  recentRaceIds: [],         // avoid immediate repeats
+  recentRaceIds: [],
   simPhase: 'select', simSelected: [], simData: null, simFrame: 0, simTimer: null,
   lbSort: 'coins',
 };
 let U = null;
+
+/* Watch-race globals */
+let _frozenFrame = null;   // base64 snapshot of paused canvas
+let _watchRAF = null;
+let _watchStart = null;
+let _watchProgress = 0;
+const WATCH_PAUSE_T = 0.62;    // pause at top of straight (62% of race)
+const WATCH_DURATION_MS = 11000; // full race in 11s
 
 /* ════════════════════════════════════════════════
    STORAGE
@@ -1135,161 +1184,145 @@ function buildVideoPanel(race){
    PAGE: CHALLENGE
    ════════════════════════════════════════════════ */
 function pageChallenge(){
-  const race = getCurrentRace();
+  const race=getCurrentRace();
 
-  const horse_pick_card=(h,idx)=>{
-    const isFav=h.oddsN&&h.oddsN<=3.5;
-    const sel=G.challengeSelected===h.id;
-    return `
-    <div class="hpc${sel?' selected':''}" style="--hc:${h.color};animation-delay:${idx*.08}s" data-action="pickHorse" data-horse="${h.id}">
-      <div class="hpc-top">
-        <div class="hpc-bar" style="background:${h.color}"></div>
-        <span class="hpc-num">#${h.number||idx+1}</span>
-        ${isFav?'<span class="hpc-fav">⭐ FAV</span>':''}
-        ${sel?'<div class="hpc-sel-mark">✓</div>':''}
-      </div>
-      <div class="hpc-main">
-        <div class="hpc-name">${esc(h.name)}</div>
-        <div class="hpc-jock">🏇 ${esc(h.jockey)}</div>
-        ${h.weight?`<div class="hpc-wt">⚖️ ${esc(h.weight)}${h.age?' · Age '+h.age:''}</div>`:''}
-      </div>
-      <div class="hpc-odds-block">
-        <div class="hpc-odds">${esc(h.odds)}</div>
-        <div class="hpc-odds-lbl">Odds</div>
-      </div>
-      ${h.form?`<div class="form-lbl">Last ${h.form.length} races</div><div class="form-pills">${h.form.map(f=>`<span class="fp ${f==='1st'?'w':f==='2nd'||f==='3rd'?'p':'o'}">${f}</span>`).join('')}</div>`:''}
-      <div class="sbar-wrap" style="margin-top:4px">
-        ${['speed','stamina','acceleration'].map(k=>`<div class="sbar-row"><span class="sbar-lbl">${{speed:'SPD',stamina:'STA',acceleration:'ACC'}[k]}</span><div class="sbar-track"><div class="sbar-fill" style="width:${h.stats[k]}%;background:${h.color}"></div></div><span class="sbar-val">${h.stats[k]}</span></div>`).join('')}
-      </div>
-    </div>`;
-  };
-
-  // ── PHASE: PICK ──────────────────────────────────────────────────────────
-  if(G.challengePhase==='pick'){
-    const sel=G.challengeSelected?race.horses.find(h=>h.id===G.challengeSelected):null;
-    const wr=U.totalPredictions>0?Math.round(U.totalWins/U.totalPredictions*100):0;
+  // ── PHASE: WATCH (race plays to top of straight) ─────────────────────────
+  if(G.challengePhase==='watch'){
     return `<div class="pg">
-      <div class="ph">
-        <h1>🎯 Guess The Winner</h1>
-        <p>Study the stats — pick which horse wins this race</p>
-      </div>
-      <div class="card card-hi race-hdr" style="margin-bottom:22px">
-        <div class="race-flags">
-          <span class="badge b-${race.difficulty}">${race.difficulty?.toUpperCase()} DIFFICULTY</span>
-          ${race.grade?`<span class="badge b-common">${esc(race.grade)}</span>`:''}
-          <span class="badge b-common">📊 ${U.totalPredictions} picks · ${wr}% accuracy</span>
+      <div class="watch-header">
+        <div>
+          <div class="watch-race-title">🏇 ${esc(race.name)}</div>
+          <div class="watch-meta">${esc(race.date)} · ${esc(race.track)} · ${esc(race.distance)}</div>
         </div>
-        <div class="race-title">${esc(race.name)}</div>
-        <div class="race-meta-grid">
-          <div class="race-meta-item">📍 ${esc(race.track)}</div>
-          <div class="race-meta-item">📏 ${esc(race.distance)}</div>
-          <div class="race-meta-item">🌿 ${esc(race.surface)}</div>
-          <div class="race-meta-item">☁️ ${esc(race.condition)}</div>
-          <div class="race-meta-item">📅 ${esc(race.date)}</div>
-          ${race.purse?`<div class="race-meta-item">💰 ${esc(race.purse)}</div>`:''}
-        </div>
-        ${race.description?`<div class="race-desc">${esc(race.description)}</div>`:''}
-        <div class="diff-hint">${race.difficulty==='easy'?'💡 Easy — look for the clear favourite in the odds!':'🔥 Hard — very close competition. Study the form carefully!'}</div>
+        <span class="badge b-${race.difficulty}">${race.difficulty?.toUpperCase()}</span>
       </div>
-      <div class="pick-title">Select the winner ↓</div>
-      <div class="horses-grid">${race.horses.map((h,i)=>horse_pick_card(h,i)).join('')}</div>
-      <div class="pick-submit">
-        <div class="pick-hint">${sel?`You picked: <strong>${esc(sel.name)}</strong>`:'Tap a horse to make your pick'}</div>
-        <button class="btn btn-gold btn-lg" data-action="submitPick" ${!G.challengeSelected?'disabled':''}>🏁 Lock In My Pick!</button>
+      ${race.description?`<div class="card" style="padding:12px 16px;margin-bottom:14px;font-family:var(--fs);font-size:13px;color:var(--t2);line-height:1.5">${esc(race.description)}</div>`:''}
+      <div class="watch-canvas-wrap">
+        <div class="watch-canvas-top">
+          <span class="watch-canvas-label">⚡ RACE IN PROGRESS</span>
+          <span class="watch-clock" id="watch-clock">0.00s</span>
+        </div>
+        <canvas id="watch-canvas" style="width:100%;display:block"></canvas>
+        <div class="watch-legend">
+          ${race.horses.map(h=>`<div class="wl-item"><div class="wl-dot" style="background:${h.color}"></div><span>${esc(h.name)}</span></div>`).join('')}
+        </div>
+      </div>
+      <div style="text-align:center;font-family:var(--fs);font-size:13px;color:var(--t3);padding:8px 0">
+        🔴 Race will pause at the top of the straight — pick your winner from there
       </div>
     </div>`;
   }
 
-  // ── PHASE: SUSPENSE ──────────────────────────────────────────────────────
-  if(G.challengePhase==='suspense'){
+  // ── PHASE: PICK (race frozen — make your prediction) ─────────────────────
+  if(G.challengePhase==='pick'){
+    const order=getRaceOrder(race);
+    const posLabels=['🏇 LEADING','2nd','3rd','4th','5th','6th','7th','8th'];
+    const sel=G.challengeSelected;
     return `<div class="pg anim-in">
-      <div class="suspense-wrap">
-        <div class="suspense-horse">🏇</div>
-        <div class="suspense-title">Checking the results...</div>
-        <div class="suspense-sub">${esc(race.name)}</div>
-        <div class="suspense-progress"><div class="suspense-bar" id="suspense-bar"></div></div>
+      <div class="straight-banner">
+        <div class="sb-icon">🔴</div>
+        <div>
+          <div class="sb-text">TOP OF THE STRAIGHT</div>
+          <div class="sb-sub">Race paused — who wins from here?</div>
+        </div>
+      </div>
+      ${_frozenFrame?`<div class="frozen-wrap"><img src="${_frozenFrame}" alt="Race paused at top of straight"/><div class="frozen-badge">⏸ PAUSED</div></div>`:''}
+      <div style="font-family:var(--fs);font-size:12px;color:var(--t3);margin-bottom:10px;text-align:center">Match the colours above to pick your horse ↓</div>
+      <div class="pfr-grid">
+        ${order.map((h,i)=>`
+          <div class="pfr-card${sel===h.id?' sel':''}" style="--hc:${h.color}" data-action="pickHorse" data-horse="${h.id}">
+            <div class="pfr-pos">${posLabels[i]||`${i+1}th`}</div>
+            <div class="pfr-dot" style="background:${h.color}"></div>
+            <div class="pfr-info">
+              <div class="pfr-name">${esc(h.name)}</div>
+              <div class="pfr-jock">${esc(h.jockey)}</div>
+              <div class="pfr-odds">${esc(h.odds)}</div>
+            </div>
+            ${sel===h.id?'<div class="pfr-check">✓</div>':''}
+          </div>`).join('')}
+      </div>
+      <div class="pick-lock-bar">
+        <div class="pick-lock-hint">${sel?`Your pick: <strong>${esc(race.horses.find(h=>h.id===sel)?.name||'')}</strong>`:'Tap a horse above to pick'}</div>
+        <button class="btn btn-gold btn-lg" data-action="lockInPick" ${!sel?'disabled':''}>🏁 Lock In &amp; Race!</button>
       </div>
     </div>`;
   }
 
-  // ── PHASE: RESULT ────────────────────────────────────────────────────────
+  // ── PHASE: RESUME (race continues after lock-in) ──────────────────────────
+  if(G.challengePhase==='resume'){
+    const picked=race.horses.find(h=>h.id===G.challengeSelected);
+    return `<div class="pg anim-in">
+      <div class="resume-banner">
+        <span style="font-size:24px">🏁</span>
+        <div>
+          <div class="resume-horse-name">${esc(picked?.name||'Your pick')} making their move…</div>
+          <div style="font-family:var(--fs);font-size:11px;color:var(--t3)">Down the final straight!</div>
+        </div>
+      </div>
+      <div class="watch-canvas-wrap">
+        <div class="watch-canvas-top">
+          <span class="watch-canvas-label">⚡ FINAL STRAIGHT!</span>
+          <span class="watch-clock" id="watch-clock">${(_watchProgress*WATCH_DURATION_MS/1000).toFixed(2)}s</span>
+        </div>
+        <canvas id="watch-canvas" style="width:100%;display:block"></canvas>
+        <div class="watch-legend">
+          ${race.horses.map(h=>`<div class="wl-item"><div class="wl-dot" style="background:${h.color}"></div><span>${esc(h.name)}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // ── PHASE: RESULT ─────────────────────────────────────────────────────────
   if(G.challengePhase==='result'){
-    const res = G.challengeResult;
-    const correctId = race.winner;
-    const isCorrect = res && res.correct;
+    const res=G.challengeResult;
+    const correctId=race.winner;
+    const isCorrect=res&&res.correct;
     return `<div class="pg anim-in">
       <div class="ph"><h1>🏆 Race Result</h1><p>${esc(race.name)}</p></div>
       <div class="result-wrap">
         <div class="result-banner ${isCorrect?'c':'w'}">
           <div class="result-emoji">${isCorrect?'🎉':'😔'}</div>
           <div class="result-text">${isCorrect?'CORRECT PICK!':'WRONG PICK'}</div>
-          <div class="result-sub">${isCorrect?`+${res.coins} coins earned! Streak: ${res.streak} 🔥`:`The winner was ${esc(race.horses.find(h=>h.id===race.winner)?.name||'')}.`}</div>
+          <div class="result-sub">${isCorrect?`+${res.coins} coins! Streak: ${res.streak} 🔥`:`The winner was ${esc(race.horses.find(h=>h.id===race.winner)?.name||'')}`}</div>
         </div>
-        <div>
-          <div class="winner-title">🏆 Official Result</div>
-          <div class="winner-grid">
-            ${race.horses.map((h,i)=>{
-              const win=h.id===correctId;
-              const wasPick=res&&res.horseId===h.id&&!win;
-              return `<div class="wh-card${win?' winner':''}${wasPick?' wrong':''}" style="animation-delay:${i*.1}s">
-                ${win?'<div class="crown-tag">👑 WINNER</div>':''}
-                ${wasPick?'<div class="pick-tag">Your Pick</div>':''}
-                <div class="wh-dot" style="background:${h.color}">${win?'🏆':''}</div>
-                <div class="wh-name">${esc(h.name)}</div>
-                <div class="wh-jock">🏇 ${esc(h.jockey)}</div>
-                <div class="wh-odds">${esc(h.odds)}</div>
-                ${win&&race.result?`<div class="wh-winner-details"><span>⏱ ${race.result.winTime}</span><span>📏 ${race.result.margin}</span></div>`:''}
-              </div>`;
-            }).join('')}
-          </div>
+        <div class="winner-title">🏆 Official Result</div>
+        <div class="winner-grid">
+          ${race.horses.map((h,i)=>{
+            const win=h.id===correctId;
+            const wasPick=res&&res.horseId===h.id&&!win;
+            return `<div class="wh-card${win?' winner':''}${wasPick?' wrong':''}" style="animation-delay:${i*.08}s">
+              ${win?'<div class="crown-tag">👑 WINNER</div>':''}
+              ${wasPick?'<div class="pick-tag">Your Pick</div>':''}
+              <div class="wh-dot" style="background:${h.color}">${win?'🏆':''}</div>
+              <div class="wh-name">${esc(h.name)}</div>
+              <div class="wh-jock">🏇 ${esc(h.jockey)}</div>
+              <div class="wh-odds">${esc(h.odds)}</div>
+              ${win&&race.result?`<div class="wh-winner-details"><span>⏱ ${race.result.winTime}</span><span>📏 ${race.result.margin}</span></div>`:''}
+            </div>`;
+          }).join('')}
         </div>
         ${race.result?.positions?`
         <div class="card placements">
           <div class="plc-title">🏁 Finishing Order</div>
-          ${race.result.positions.map((hid,i)=>{const h=race.horses.find(x=>x.id===hid);if(!h)return'';const labels=['1st 🥇','2nd 🥈','3rd 🥉'];const isW=i===0;const isP=res&&res.horseId===hid;return`<div class="plc-row${isW?' winner-row':''}${isP?' your-pick-row':''}"><span class="plc-pos">${labels[i]||`${i+1}th`}</span><span class="plc-name">${esc(h.name)}${isW?'<span class="rt-yours-tag" style="background:var(--gold);color:#0a0800">✓ Winner</span>':''}${isP&&!isW?'<span class="rt-yours-tag">Your Pick</span>':''}</span><span class="plc-jock">🏇 ${esc(h.jockey)}</span><span class="plc-odds">${esc(h.odds)}</span></div>`;}).join('')}
+          ${race.result.positions.map((hid,i)=>{
+            const h=race.horses.find(x=>x.id===hid);
+            if(!h)return'';
+            const labels=['1st 🥇','2nd 🥈','3rd 🥉'];
+            const isW=i===0;
+            const isP=res&&res.horseId===hid;
+            return`<div class="plc-row${isW?' winner-row':''}${isP?' your-pick-row':''}">
+              <span class="plc-pos">${labels[i]||`${i+1}th`}</span>
+              <span class="plc-name">${esc(h.name)}${isW?'<span class="rt-yours-tag" style="background:var(--gold);color:#0a0800">Winner</span>':''}${isP&&!isW?'<span class="rt-yours-tag">Your Pick</span>':''}</span>
+              <span class="plc-jock">🏇 ${esc(h.jockey)}</span>
+              <span class="plc-odds">${esc(h.odds)}</span>
+            </div>`;
+          }).join('')}
           ${race.result.winTime?`<div class="plc-footer"><span>⏱ ${race.result.winTime}</span>${race.result.margin?`<span>📏 ${race.result.margin}</span>`:''}</div>`:''}
         </div>`:''}
-        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:8px 0">
-          <button class="btn btn-gold btn-lg" data-action="startReplay" data-race="${race.id}">🎬 Watch Animated Replay</button>
-          <button class="btn btn-outline btn-lg" data-action="playAgain">🐎 Play Another Race</button>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:10px 0">
+          <button class="btn btn-gold btn-lg" data-action="playAgain">🐎 Play Another Race</button>
         </div>
         ${buildVideoPanel(race)}
-      </div>
-    </div>`;
-  }
-
-  // ── PHASE: SIMULATION ────────────────────────────────────────────────────
-  if(G.challengePhase==='simulation'){
-    return `<div class="pg anim-in">
-      <div class="rr-header">
-        <h1 class="rr-title">🎬 Race Replay — ${esc(race.name)}</h1>
-        <div style="font-family:var(--fs);font-size:12px;color:var(--t3)">${esc(race.date)} · ${esc(race.track)}</div>
-      </div>
-      <div class="rr-commentary" id="rr-comment">🏇 The horses break from the gates!</div>
-      <div class="card rr-track-card">
-        <div class="rr-lanes" id="rr-lanes">
-          ${race.horses.map((h,i)=>`
-            <div class="rr-lane" style="animation-delay:${i*.06}s">
-              <div class="rr-lane-info">
-                <div class="rr-lane-dot" style="background:${h.color}"></div>
-                <div>
-                  <div class="rr-lane-name">${esc(h.name)}</div>
-                  <div class="rr-lane-jock">${esc(h.jockey)}</div>
-                </div>
-              </div>
-              <div class="rr-track">
-                <div class="rr-fill" id="rr-fill-${h.id}" style="background:${h.color}"></div>
-                <div class="rr-runner" id="rr-runner-${h.id}" style="left:2px">🐎</div>
-                <div class="rr-finish"></div>
-              </div>
-              <div class="rr-pos" id="rr-pos-${h.id}"></div>
-            </div>`).join('')}
-        </div>
-      </div>
-      <div class="rr-standings" id="rr-standings"></div>
-      <div id="rr-dm-player" style="display:none;margin-top:18px">${buildVideoPanel(race)}</div>
-      <div class="rr-cta" id="rr-cta">
-        <button class="btn btn-gold btn-lg" data-action="playAgain">🐎 Play Another Race</button>
       </div>
     </div>`;
   }
@@ -1560,7 +1593,10 @@ function pageLeaderboard(){
    ════════════════════════════════════════════════ */
 function render(){
   const app=document.getElementById('app');
-  // Stop any running canvas animation before re-render
+  // Stop any running watch race animation unless we're about to resume it
+  const needsWatch=(G.page==='challenge'&&(G.challengePhase==='watch'||G.challengePhase==='resume'));
+  if(!needsWatch) stopWatchRace();
+  // Stop sim canvas race if not in sim racing
   if(G.page!=='simrace'||G.simPhase!=='racing') stopCanvasRace();
   if(!U){
     app.innerHTML=pageWelcome();
@@ -1584,6 +1620,11 @@ function render(){
     btn.onclick=toggleSFX;
     document.body.appendChild(btn);
   }
+  // Start race animations after DOM settles
+  if(G.page==='challenge'&&G.challengePhase==='watch')
+    setTimeout(()=>startWatchRace(getCurrentRace()),60);
+  if(G.page==='challenge'&&G.challengePhase==='resume')
+    setTimeout(()=>resumeWatchRace(getCurrentRace()),60);
   if(G.page==='simrace'&&G.simPhase==='racing') startRaceAnimation();
 }
 
@@ -1900,6 +1941,228 @@ function startCanvasRace(horses,results,onFinish){
   _raceRAF=requestAnimationFrame(frame);
 }
 
+/* ════════════════════════════════════════════════
+   WATCH RACE ENGINE
+   Drives the challenge: play → pause at straight →
+   player picks → resume → result
+   ════════════════════════════════════════════════ */
+function stopWatchRace(){
+  if(_watchRAF){cancelAnimationFrame(_watchRAF);_watchRAF=null;}
+  _watchStart=null;
+}
+
+/* Deterministic progress at time t — no jitter, for ordering pick cards */
+function watchRaceProgress(horseId, t, race){
+  const positions=race.result.positions;
+  const rank=positions.indexOf(horseId);
+  const n=race.horses.length;
+  const r=rank===-1?n-1:rank;
+  const maxF=1-r*(0.042/Math.max(1,n-1));
+  const ease=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+  return maxF*ease;
+}
+
+/* Noisy progress for the running animation */
+function watchRaceProgressNoisy(horseId, t, race){
+  const base=watchRaceProgress(horseId,t,race);
+  const r=race.result.positions.indexOf(horseId);
+  const jitter=0.022*Math.sin(t*21+r*4)*Math.sin(t*8+r*2.1);
+  return Math.max(0,Math.min(base+0.04,base+jitter));
+}
+
+/* Current running order at pause point (for pick cards) */
+function getRaceOrder(race){
+  return race.horses.map(h=>({
+    ...h,
+    prog:watchRaceProgress(h.id,WATCH_PAUSE_T,race)
+  })).sort((a,b)=>b.prog-a.prog);
+}
+
+/* Draw a single frame of the watch race onto the canvas */
+function drawWatchFrame(canvas, race, t, pickedId){
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height;
+  const horses=race.horses;
+  const PT=28,PB=14,LANE_H=50;
+  const TL=178,FX=W-40,TW=FX-TL;
+
+  // Background
+  ctx.fillStyle='#0c1e0c'; ctx.fillRect(0,0,W,H);
+  // Top progress bar
+  ctx.fillStyle='rgba(255,255,255,.06)'; ctx.fillRect(TL,5,TW,5);
+  ctx.fillStyle='rgba(240,192,64,.75)'; ctx.fillRect(TL,5,TW*t,5);
+
+  horses.forEach((h,i)=>{
+    const y=PT+i*LANE_H;
+    // Lane turf
+    ctx.fillStyle=i%2?'rgba(18,80,18,.22)':'rgba(26,110,26,.18)';
+    ctx.fillRect(TL,y,TW,LANE_H);
+    ctx.fillStyle='rgba(255,255,255,.05)'; ctx.fillRect(TL,y+LANE_H-1,TW,1);
+
+    // Name panel
+    ctx.fillStyle='rgba(0,0,0,.55)'; ctx.fillRect(0,y+1,TL-2,LANE_H-2);
+    // Number circle
+    ctx.fillStyle=h.color||'#888';
+    ctx.beginPath(); ctx.arc(14,y+LANE_H/2,10,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#fff'; ctx.font='bold 10px monospace';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(String(i+1),14,y+LANE_H/2);
+    // Name
+    ctx.fillStyle='rgba(240,220,180,.92)'; ctx.font='bold 11px sans-serif';
+    ctx.textAlign='left'; ctx.textBaseline='middle';
+    ctx.fillText((h.name.length>16?h.name.slice(0,15)+'…':h.name),28,y+LANE_H/2);
+
+    // Horse on track
+    const p=watchRaceProgressNoisy(h.id,t,race);
+    const hx=TL+p*TW;
+    const bob=Math.sin(Date.now()/110+i*1.4)*2;
+
+    // Shadow
+    ctx.fillStyle='rgba(0,0,0,.28)';
+    ctx.beginPath(); ctx.ellipse(hx,y+LANE_H-6,15,4,0,0,Math.PI*2); ctx.fill();
+
+    // Picked horse highlight glow
+    if(h.id===pickedId){
+      ctx.save();
+      ctx.shadowColor=h.color; ctx.shadowBlur=18;
+      ctx.fillStyle=h.color; ctx.beginPath(); ctx.arc(hx,y+LANE_H/2,13,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+      // Arrow above
+      ctx.fillStyle=h.color; ctx.font='14px serif';
+      ctx.textAlign='center'; ctx.textBaseline='bottom';
+      ctx.fillText('▼',hx,y-1);
+    }
+
+    // Silk dot
+    ctx.fillStyle=h.color||'#888';
+    ctx.beginPath(); ctx.arc(hx,y+LANE_H/2,9,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,.4)'; ctx.lineWidth=1.5; ctx.stroke();
+    // Emoji
+    ctx.font='18px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('🐎',hx,y+LANE_H/2-1+bob);
+
+    // Position badges fade in after 80%
+    if(t>0.82){
+      const alpha=Math.min(1,(t-0.82)/0.1);
+      const rk=race.result.positions.indexOf(h.id);
+      if(rk>=0){
+        ctx.globalAlpha=alpha;
+        ctx.fillStyle=['#f0c040','#aaaaaa','#cd7f32','#555555'][rk]||'#444';
+        ctx.beginPath(); ctx.arc(FX+18,y+LANE_H/2,11,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle='#fff'; ctx.font='bold 10px monospace';
+        ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(rk+1,FX+18,y+LANE_H/2);
+        ctx.globalAlpha=1;
+      }
+    }
+  });
+
+  // Finish line
+  for(let s=0;s<14;s++){
+    ctx.fillStyle=s%2?'#000':'#fff';
+    ctx.fillRect(FX,PT+s*((H-PT-PB)/14),3,(H-PT-PB)/14);
+  }
+  ctx.fillStyle='rgba(240,192,64,.9)'; ctx.font='bold 10px monospace';
+  ctx.textAlign='center'; ctx.textBaseline='bottom';
+  ctx.fillText('FINISH',FX+1.5,PT-2);
+
+  // Straight marker line (appears when approaching pause point)
+  if(t>=WATCH_PAUSE_T*0.88&&t<=WATCH_PAUSE_T*1.02){
+    const alpha=1-Math.abs(t-WATCH_PAUSE_T)/0.06;
+    if(alpha>0){
+      const sx=TL+WATCH_PAUSE_T*TW;
+      ctx.globalAlpha=Math.min(1,alpha*3);
+      ctx.strokeStyle='#ff4444'; ctx.lineWidth=2; ctx.setLineDash([4,3]);
+      ctx.beginPath(); ctx.moveTo(sx,PT); ctx.lineTo(sx,H-PB); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle='rgba(255,68,68,.85)';
+      ctx.font='bold 10px monospace'; ctx.textAlign='center';
+      ctx.fillText('STRAIGHT',sx,PT-3);
+      ctx.globalAlpha=1;
+    }
+  }
+}
+
+function initWatchCanvas(race){
+  const canvas=document.getElementById('watch-canvas');
+  if(!canvas) return null;
+  const W=Math.min(canvas.parentElement.clientWidth||700,1100);
+  const LANE_H=50,PT=28,PB=14;
+  const H=PT+race.horses.length*LANE_H+PB;
+  canvas.width=W; canvas.height=H;
+  return canvas;
+}
+
+function startWatchRace(race){
+  stopWatchRace();
+  const canvas=initWatchCanvas(race);
+  if(!canvas) return;
+  _watchProgress=0; _watchStart=null;
+  SFX.start();
+  setTimeout(()=>SFX.crowd(0.6),350);
+
+  function frame(ts){
+    if(!_watchStart) _watchStart=ts;
+    _watchProgress=Math.min(1,(ts-_watchStart)/WATCH_DURATION_MS);
+    // Update clock
+    const clk=document.getElementById('watch-clock');
+    if(clk) clk.textContent=((_watchProgress*WATCH_DURATION_MS/1000)).toFixed(2)+'s';
+    drawWatchFrame(canvas,race,_watchProgress,null);
+    if(_watchProgress<WATCH_PAUSE_T){
+      _watchRAF=requestAnimationFrame(frame);
+    } else {
+      // Capture frozen frame and transition to pick phase
+      _frozenFrame=canvas.toDataURL('image/jpeg',0.88);
+      G.challengePhase='pick';
+      render();
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+  }
+  _watchRAF=requestAnimationFrame(frame);
+}
+
+function resumeWatchRace(race){
+  stopWatchRace();
+  const canvas=initWatchCanvas(race);
+  if(!canvas) return;
+  const RESUME_FROM=WATCH_PAUSE_T;
+  const remainFrac=1-RESUME_FROM;
+  const remainMs=WATCH_DURATION_MS*remainFrac;
+  _watchProgress=RESUME_FROM;
+  let resumeStart=null;
+
+  SFX.crowd(0.8);
+
+  function frame(ts){
+    if(!resumeStart) resumeStart=ts;
+    const elapsed=ts-resumeStart;
+    _watchProgress=RESUME_FROM+(elapsed/remainMs)*remainFrac;
+    _watchProgress=Math.min(1,_watchProgress);
+    const clk=document.getElementById('watch-clock');
+    if(clk) clk.textContent=((_watchProgress*WATCH_DURATION_MS/1000)).toFixed(2)+'s';
+    drawWatchFrame(canvas,race,_watchProgress,G.challengeSelected);
+    if(_watchProgress<1){
+      _watchRAF=requestAnimationFrame(frame);
+    } else {
+      // Race finished — score it
+      SFX.crowd(1.5);
+      const res=predictRace(race.id,G.challengeSelected);
+      if(res){
+        G.challengeResult={correct:res.correct,coins:res.coins,streak:res.streak,horseId:G.challengeSelected,correctHorseId:race.winner};
+        setTimeout(()=>{
+          if(res.correct){launchConfetti();SFX.correct();setTimeout(()=>SFX.coin(),400);}
+          else SFX.wrong();
+          checkAchievements();
+          G.challengePhase='result';
+          render();
+          window.scrollTo({top:0,behavior:'smooth'});
+        },700); // brief pause after finish
+      }
+    }
+  }
+  _watchRAF=requestAnimationFrame(frame);
+}
+
 
 document.addEventListener('click',e=>{
   const el=e.target.closest('[data-action]');
@@ -1921,10 +2184,11 @@ document.addEventListener('click',e=>{
   if(action==='nav'){
     G.page=el.dataset.page;
     if(G.page==='challenge'){
-      G.challengePhase='pick';
+      G.challengePhase='watch';
       G.challengeSelected=null;
       G.challengeResult=null;
-      G.challengeRaceId=null; // pick fresh race on next visit
+      G.challengeRaceId=null;
+      _frozenFrame=null;
     }
     if(G.page==='simrace'){if(G.simPhase!=='select'){G.simPhase='select';G.simSelected=[];G.simData=null;}}
     if(G.simTimer) clearInterval(G.simTimer);
@@ -1938,59 +2202,39 @@ document.addEventListener('click',e=>{
   if(action==='pickHorse'&&G.page==='challenge'){
     SFX.pick();
     G.challengeSelected=el.dataset.horse;
-    render();
+    // Update pick cards in-place without full re-render
+    document.querySelectorAll('.pfr-card').forEach(c=>{
+      const isSel=c.dataset.horse===G.challengeSelected;
+      c.classList.toggle('sel',isSel);
+      // update checkmark
+      const existing=c.querySelector('.pfr-check');
+      if(isSel&&!existing){const ch=document.createElement('div');ch.className='pfr-check';ch.textContent='✓';c.appendChild(ch);}
+      else if(!isSel&&existing) existing.remove();
+    });
+    // Update hint text
+    const hint=document.querySelector('.pick-lock-hint');
+    const horse=getCurrentRace().horses.find(h=>h.id===G.challengeSelected);
+    if(hint&&horse) hint.innerHTML=`Your pick: <strong>${esc(horse.name)}</strong>`;
+    // Enable lock button
+    const lockBtn=document.querySelector('[data-action="lockInPick"]');
+    if(lockBtn) lockBtn.removeAttribute('disabled');
     return;
   }
 
-  if(action==='submitPick'){
+  if(action==='lockInPick'){
     if(!G.challengeSelected) return;
-    const race = getCurrentRace();
-
-    // Phase 1: show suspense screen
-    G.challengePhase='suspense';
+    G.challengePhase='resume';
     render();
-
-    // Animate the suspense progress bar
-    let prog=0;
-    const barInterval = setInterval(()=>{
-      prog=Math.min(100, prog+3.5);
-      const bar=document.getElementById('suspense-bar');
-      if(bar) bar.style.width=prog+'%';
-    }, 60);
-
-    // After 2.4s reveal result
-    setTimeout(()=>{
-      clearInterval(barInterval);
-      const res=predictRace(race.id, G.challengeSelected);
-      if(res){
-        G.challengeResult={correct:res.correct,coins:res.coins,streak:res.streak,horseId:G.challengeSelected,correctHorseId:race.winner};
-        G.challengePhase='result';
-        if(res.correct){
-          launchConfetti();
-          SFX.correct();
-          if(res.coins>0) setTimeout(()=>SFX.coin(),400);
-        } else {
-          SFX.wrong();
-        }
-        checkAchievements();
-        render();
-        window.scrollTo({top:0,behavior:'smooth'});
-      }
-    }, 2400);
-    return;
-  }
-
-  if(action==='startReplay'){
-    startRaceReplay(el.dataset.race || G.challengeRaceId);
-    window.scrollTo({top:0,behavior:'smooth'});
     return;
   }
 
   if(action==='playAgain'){
-    G.challengePhase='pick';
+    stopWatchRace();
+    G.challengePhase='watch';
     G.challengeSelected=null;
     G.challengeResult=null;
-    G.challengeRaceId=null; // triggers getRandomRace() for a fresh race
+    G.challengeRaceId=null;
+    _frozenFrame=null;
     window.scrollTo({top:0,behavior:'smooth'});
     render();
     return;
@@ -2088,10 +2332,10 @@ document.addEventListener('keydown',e=>{
    INIT
    ════════════════════════════════════════════════ */
 load();
-// Migrate old saves that have dailyResults (clean it out)
 if(U && U.dailyResults) { delete U.dailyResults; save(); }
-// Run achievements check on load in case existing save qualifies
 if(U) { setTimeout(()=>checkAchievements(), 1500); }
+// Ensure challenge starts in watch phase
+if(!U) G.challengePhase='watch';
 render();
 </script>
 </body>
