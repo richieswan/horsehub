@@ -272,6 +272,24 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .dm-player-footer{padding:11px 18px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--bg3);border-top:1px solid var(--bdr)}
 .dm-footer-label{font-family:var(--fs);font-size:11px;color:var(--t3);flex:1}
 
+/* ── Video Find Panel ────────────────────────── */
+.video-find-panel{padding:28px 22px;text-align:center;background:linear-gradient(135deg,rgba(240,192,64,.05),rgba(255,255,255,.02));display:flex;flex-direction:column;align-items:center;gap:12px}
+.vfp-icon{font-size:52px;opacity:.7;animation:float 3s ease-in-out infinite}
+.vfp-title{font-family:var(--ff);font-size:18px;color:var(--gold)}
+.vfp-sub{font-family:var(--fs);font-size:12px;color:var(--t3)}
+.vfp-note{font-family:var(--fs);font-size:13px;color:var(--t2);max-width:340px;line-height:1.5}
+.vfp-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+.vfp-btn{display:flex;align-items:center;gap:12px;padding:14px 22px;border-radius:var(--r3);text-decoration:none;font-family:var(--fs);font-size:14px;min-width:170px;transition:var(--tr);border:1px solid}
+.vfp-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.vfp-btn-icon{font-size:22px;flex-shrink:0}
+.vfp-btn span{text-align:left}
+.vfp-btn strong{display:block;color:var(--t1)}
+.vfp-btn small{color:var(--t3);font-size:11px}
+.vfp-yt{background:rgba(255,0,0,.08);border-color:rgba(255,0,0,.3);color:var(--t1)}
+.vfp-yt:hover{background:rgba(255,0,0,.15);border-color:rgba(255,0,0,.5)}
+.vfp-dm{background:rgba(0,144,255,.08);border-color:rgba(0,144,255,.3);color:var(--t1)}
+.vfp-dm:hover{background:rgba(0,144,255,.15);border-color:rgba(0,144,255,.5)}
+
 /* ── Stable ──────────────────────────────────── */
 .tabs{display:flex;gap:5px;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r3);padding:5px;margin-bottom:24px}
 .tab{flex:1;padding:9px 14px;background:transparent;border:1px solid transparent;border-radius:var(--r2);font-family:var(--fs);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);cursor:pointer;transition:var(--tr)}
@@ -490,8 +508,10 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 const RACES = [
   {id:'r01',name:'2015 Belmont Stakes',track:'Belmont Park, New York',distance:'1½ miles (12f)',surface:'Dirt',condition:'Fast',date:'June 6, 2015',country:'USA',grade:'Grade I',purse:'$1,500,000',
    videoSearch:'2015 Belmont Stakes American Pharoah Triple Crown full race',
+   dmId:'x2t4l7m',
+
    difficulty:'easy',winner:'h01_1',
-   description:'The 147th Belmont — American Pharoah bids to end a 37-year Triple Crown drought. The last to win it was Affirmed in 1978.',
+   description:'The 147th Belmont — the final jewel of the Triple Crown. One horse arrives having won both the Derby and Preakness. No horse has claimed the Crown since Affirmed in 1978.',
    result:{positions:['h01_1','h01_4','h01_3','h01_2'],winTime:'2:26.65',margin:'5½ lengths'},
    horses:[
     {id:'h01_1',name:'American Pharoah',number:5,jockey:'Victor Espinoza',trainer:'Bob Baffert',odds:'3/5',oddsN:1.6,color:'#1a6b3c',form:['1st','1st','1st','1st','1st'],weight:'126 lbs',age:3,stats:{speed:98,stamina:95,acceleration:97,luck:99}},
@@ -501,8 +521,9 @@ const RACES = [
   ]},
   {id:'r02',name:'2018 Cox Plate',track:'Moonee Valley, Melbourne',distance:'2040m',surface:'Turf',condition:'Good',date:'October 27, 2018',country:'Australia',grade:'Group 1',purse:'$3,000,000',
    videoSearch:'Winx 2018 Cox Plate fourth consecutive full race',
+   dmId:'x7xwsf6',
    difficulty:'easy',winner:'h02_1',
-   description:"The great mare Winx goes for her 4th consecutive Cox Plate — she hadn't been beaten in over 3 years.",
+   description:"The great mare bids for a fourth consecutive Cox Plate — something no horse has ever done. The field includes international challengers willing to take her on.",
    result:{positions:['h02_1','h02_2','h02_3','h02_4'],winTime:'2:04.04',margin:'4 lengths'},
    horses:[
     {id:'h02_1',name:'Winx',number:4,jockey:'Hugh Bowman',trainer:'Chris Waller',odds:'1/20',oddsN:1.05,color:'#6b21a8',form:['1st','1st','1st','1st','1st'],weight:'58.5 kg',age:7,stats:{speed:99,stamina:98,acceleration:96,luck:100}},
@@ -513,7 +534,7 @@ const RACES = [
   {id:'r03',name:'2019 Melbourne Cup',track:'Flemington, Melbourne',distance:'3200m',surface:'Turf',condition:'Good',date:'November 5, 2019',country:'Australia',grade:'Group 1',purse:'$7,750,000',
    videoSearch:'2019 Melbourne Cup Vow And Declare Craig Williams full race',
    difficulty:'hard',winner:'h03_1',
-   description:"The race that stops a nation. Vow And Declare, trained by Danny O'Brien and ridden by Craig Williams, upsets the international challengers.",
+   description:"The race that stops a nation. An international field squares off against Australian locals over 3200m at Flemington. The prize? $7.75 million and immortality.",
    result:{positions:['h03_1','h03_2','h03_3','h03_4','h03_5'],winTime:'3:17.30',margin:'½ length'},
    horses:[
     {id:'h03_1',name:'Vow And Declare',number:6,jockey:'Craig Williams',trainer:"Danny O'Brien",odds:'10/1',oddsN:11,color:'#1d4ed8',form:['2nd','3rd','1st','2nd','1st'],weight:'55.5 kg',age:5,stats:{speed:87,stamina:94,acceleration:83,luck:85}},
@@ -525,7 +546,7 @@ const RACES = [
   {id:'r04',name:'2020 Melbourne Cup',track:'Flemington, Melbourne',distance:'3200m',surface:'Turf',condition:'Good',date:'November 3, 2020',country:'Australia',grade:'Group 1',purse:'$7,750,000',
    videoSearch:'2020 Melbourne Cup Twilight Payment Jye McNeil full race',
    difficulty:'hard',winner:'h04_1',
-   description:"Run behind closed doors due to COVID-19. Joseph O'Brien's Twilight Payment surges home under Jye McNeil at 19/1.",
+   description:"A ghost race like no other — held entirely behind closed doors with zero spectators due to COVID-19. No crowd, no noise. Just 24 stayers fighting for the famous Cup.",
    result:{positions:['h04_1','h04_2','h04_3','h04_4'],winTime:'3:26.52',margin:'2½ lengths'},
    horses:[
     {id:'h04_1',name:'Twilight Payment',number:6,jockey:'Jye McNeil',trainer:"Joseph O'Brien",odds:'19/1',oddsN:20,color:'#1d4ed8',form:['3rd','2nd','1st','4th','2nd'],weight:'56.5 kg',age:7,stats:{speed:86,stamina:96,acceleration:82,luck:84}},
@@ -536,7 +557,7 @@ const RACES = [
   {id:'r05',name:'2021 Melbourne Cup',track:'Flemington, Melbourne',distance:'3200m',surface:'Turf',condition:'Good to Firm',date:'November 2, 2021',country:'Australia',grade:'Group 1',purse:'$8,000,000',
    videoSearch:'2021 Melbourne Cup Verry Elleegant James McDonald full race',
    difficulty:'hard',winner:'h05_1',
-   description:"Verry Elleegant and James McDonald produce a stunning ride to beat the heavily-backed favourite Incentivise in a boilover.",
+   description:"The $8 million race that stops a nation — 2021 edition. A dominant favourite arrives off a near-unbeaten run. Can any of the challengers end the streak?",
    result:{positions:['h05_1','h05_2','h05_3','h05_4'],winTime:'3:18.45',margin:'½ length'},
    horses:[
     {id:'h05_1',name:'Verry Elleegant',number:4,jockey:'James McDonald',trainer:'Chris Waller',odds:'8/1',oddsN:9,color:'#be185d',form:['1st','2nd','1st','1st','3rd'],weight:'56.5 kg',age:6,stats:{speed:91,stamina:95,acceleration:89,luck:88}},
@@ -547,7 +568,7 @@ const RACES = [
   {id:'r06',name:'2022 Melbourne Cup',track:'Flemington, Melbourne',distance:'3200m',surface:'Turf',condition:'Good',date:'November 1, 2022',country:'Australia',grade:'Group 1',purse:'$8,000,000',
    videoSearch:'2022 Melbourne Cup Gold Trip Mark Zahra full race',
    difficulty:'hard',winner:'h06_1',
-   description:"Gold Trip, trained by Ciaron Maher & David Eustace, storms home under Mark Zahra to win the 2022 Melbourne Cup at 17/1.",
+   description:"Flemington, 2022. A wide-open Melbourne Cup with no dominant favourite. The international raiders are fancied, but the Australians are hungry. $4.4 million to the winner.",
    result:{positions:['h06_1','h06_2','h06_3','h06_4'],winTime:'3:22.43',margin:'½ length'},
    horses:[
     {id:'h06_1',name:'Gold Trip',number:3,jockey:'Mark Zahra',trainer:'Ciaron Maher & David Eustace',odds:'17/1',oddsN:18,color:'#b45309',form:['4th','1st','2nd','3rd','1st'],weight:'55 kg',age:5,stats:{speed:89,stamina:94,acceleration:87,luck:86}},
@@ -558,7 +579,7 @@ const RACES = [
   {id:'r07',name:'2021 The Everest',track:'Royal Randwick, Sydney',distance:'1200m',surface:'Turf',condition:'Good to Firm',date:'October 16, 2021',country:'Australia',grade:'Listed',purse:'$15,000,000',
    videoSearch:'2021 The Everest Nature Strip James McDonald full race',
    difficulty:'hard',winner:'h07_1',
-   description:"World's richest turf race per runner. Nature Strip edges Eduardo in a photofinish to win Australia's $15 million sprint crown.",
+   description:"World's richest turf race per runner — $15 million total, $1.25m per slot. Twelve hand-picked sprinters clash over 1200m at Royal Randwick. Every horse is elite.",
    result:{positions:['h07_1','h07_2','h07_3','h07_4'],winTime:'1:09.27',margin:'Short ½ head'},
    horses:[
     {id:'h07_1',name:'Nature Strip',number:2,jockey:'James McDonald',trainer:'Chris Waller',odds:'3/1',oddsN:4,color:'#dc2626',form:['1st','1st','2nd','1st','1st'],weight:'59 kg',age:7,stats:{speed:99,stamina:85,acceleration:98,luck:92}},
@@ -568,8 +589,9 @@ const RACES = [
   ]},
   {id:'r08',name:'2019 Kentucky Derby',track:'Churchill Downs, Louisville',distance:'1¼ miles (10f)',surface:'Dirt',condition:'Sloppy',date:'May 4, 2019',country:'USA',grade:'Grade I',purse:'$3,000,000',
    videoSearch:'2019 Kentucky Derby Country House disqualification Maximum Security full race',
+   dmId:'x7w0zbj',
    difficulty:'hard',winner:'h08_1',
-   description:"One of the most controversial Derbies ever. Maximum Security crossed first but was disqualified for interference — Country House declared the winner!",
+   description:"One of the most controversial Derbies in 145 years of history. The horse crosses the wire first — then the stewards take over. 150,000 fans wait 22 agonising minutes.",
    result:{positions:['h08_1','h08_2','h08_3','h08_4'],winTime:'2:03.93',margin:'¾ length (after DQ)'},
    horses:[
     {id:'h08_1',name:'Country House',number:20,jockey:'Flavien Prat',trainer:'Bill Mott',odds:'65/1',oddsN:66,color:'#1a4731',form:['2nd','1st','2nd','1st','3rd'],weight:'126 lbs',age:3,stats:{speed:88,stamina:89,acceleration:86,luck:91}},
@@ -580,7 +602,7 @@ const RACES = [
   {id:'r09',name:'2020 Prix de l\'Arc de Triomphe',track:'ParisLongchamp, France',distance:'2400m',surface:'Turf',condition:'Very Soft',date:'October 4, 2020',country:'France',grade:'Group 1',purse:'€5,000,000',
    videoSearch:'2020 Prix Arc de Triomphe Sottsass Soumillon Enable full race',
    difficulty:'hard',winner:'h09_1',
-   description:"Enable bids for an unprecedented third Arc win, but Jean-Claude Rouget's Sottsass and Christophe Soumillon produce a stunning upset in testing ground.",
+   description:"The world's most prestigious middle-distance race. A legendary mare bids for an unprecedented third victory — something no horse has ever achieved at Longchamp.",
    result:{positions:['h09_1','h09_2','h09_3','h09_4'],winTime:'2:36.44',margin:'Short ½ head'},
    horses:[
     {id:'h09_1',name:'Sottsass',number:4,jockey:'Christophe Soumillon',trainer:'Jean-Claude Rouget',odds:'11/2',oddsN:6.5,color:'#1e3a5f',form:['1st','2nd','1st','3rd','1st'],weight:'60 kg',age:4,stats:{speed:91,stamina:93,acceleration:89,luck:88}},
@@ -591,7 +613,7 @@ const RACES = [
   {id:'r10',name:'2017 Cheltenham Gold Cup',track:'Cheltenham Racecourse, UK',distance:'3m 2½f',surface:'Turf (Jumps)',condition:'Soft',date:'March 17, 2017',country:'UK',grade:'Grade 1',purse:'£625,000',
    videoSearch:'2017 Cheltenham Gold Cup Sizing John Robbie Power full race',
    difficulty:'hard',winner:'h10_1',
-   description:"Jump racing's greatest prize. Irish trainer Jessica Harrington lands her first Gold Cup as the 7/1 shot Sizing John, ridden by Robbie Power, wins a thrilling renewal.",
+   description:"Jump racing's Blue Riband — the Cheltenham Gold Cup. Five Grade 1 chasers meet over 22 fences. The race that defines careers and ends them. Who wants it most?",
    result:{positions:['h10_1','h10_2','h10_3','h10_4','h10_5'],winTime:'6:35.90',margin:'1¼ lengths'},
    horses:[
     {id:'h10_1',name:'Sizing John',number:3,jockey:'Robbie Power',trainer:'Jessica Harrington',odds:'7/1',oddsN:8,color:'#0c4a6e',form:['1st','2nd','1st','3rd','1st'],weight:'11st 10lb',age:7,stats:{speed:88,stamina:96,acceleration:85,luck:87}},
@@ -1050,6 +1072,66 @@ function pageHome(){
 }
 
 /* ════════════════════════════════════════════════
+   VIDEO PANEL BUILDER
+   Real Dailymotion embeds where IDs are confirmed;
+   polished watch-out panel otherwise.
+   ════════════════════════════════════════════════ */
+function buildVideoPanel(race){
+  const ytQ=encodeURIComponent((race.videoSearch||race.name)+' full race');
+  const dmQ=encodeURIComponent((race.videoSearch||race.name)+' full race');
+
+  if(race.dmId){
+    // Real confirmed Dailymotion embed — works without restrictions
+    return `<div class="dm-player-wrap">
+      <div class="dm-player-header">
+        <span class="dm-player-header-title">📺 Race Footage</span>
+        <span class="dm-player-header-note">▶ Click play to watch</span>
+      </div>
+      <div class="dm-player-screen">
+        <iframe
+          src="https://www.dailymotion.com/embed/video/${race.dmId}?autoplay=0&mute=0&sharing-enable=0"
+          allow="autoplay; fullscreen; picture-in-picture; web-share"
+          allowfullscreen
+          frameborder="0"
+          title="${esc(race.name)} full race"
+        ></iframe>
+      </div>
+      <div class="dm-player-footer">
+        <span class="dm-footer-label">📺 ${esc(race.name)} · ${esc(race.date)}</span>
+        <a class="btn btn-ghost btn-sm" href="https://www.dailymotion.com/video/${race.dmId}" target="_blank" rel="noopener">Dailymotion ↗</a>
+      </div>
+    </div>`;
+  }
+
+  // No confirmed embed — show polished "Find & Watch" panel
+  return `<div class="dm-player-wrap">
+    <div class="dm-player-header">
+      <span class="dm-player-header-title">📺 Watch This Race</span>
+      <span class="dm-player-header-note">Choose where to watch</span>
+    </div>
+    <div class="video-find-panel">
+      <div class="vfp-icon">🏇</div>
+      <div class="vfp-title">${esc(race.name)}</div>
+      <div class="vfp-sub">${esc(race.date)} · ${esc(race.track)}</div>
+      <div class="vfp-note">Full race footage is available on these platforms — click to open and watch:</div>
+      <div class="vfp-btns">
+        <a class="vfp-btn vfp-yt" href="https://www.youtube.com/results?search_query=${ytQ}" target="_blank" rel="noopener">
+          <span class="vfp-btn-icon">▶</span>
+          <span><strong>YouTube</strong><br><small>Search full race</small></span>
+        </a>
+        <a class="vfp-btn vfp-dm" href="https://www.dailymotion.com/search/${dmQ}" target="_blank" rel="noopener">
+          <span class="vfp-btn-icon">📺</span>
+          <span><strong>Dailymotion</strong><br><small>Search full race</small></span>
+        </a>
+      </div>
+    </div>
+    <div class="dm-player-footer">
+      <span class="dm-footer-label">🔍 "${esc(race.videoSearch||race.name)}"</span>
+    </div>
+  </div>`;
+}
+
+/* ════════════════════════════════════════════════
    PAGE: CHALLENGE
    ════════════════════════════════════════════════ */
 function pageChallenge(){
@@ -1171,24 +1253,7 @@ function pageChallenge(){
           <button class="btn btn-gold btn-lg" data-action="startReplay" data-race="${race.id}">🎬 Watch Animated Replay</button>
           <button class="btn btn-outline btn-lg" data-action="playAgain">🐎 Play Another Race</button>
         </div>
-        <div class="dm-player-wrap">
-          <div class="dm-player-header">
-            <span class="dm-player-header-title">📺 Race Footage</span>
-            <span class="dm-player-header-note">Powered by Dailymotion · Best match shown automatically</span>
-          </div>
-          <div class="dm-player-screen">
-            <iframe
-              src="https://www.dailymotion.com/embed/search/${encodeURIComponent(race.videoSearch||race.name+' horse race full replay')}?autoplay=0"
-              allow="autoplay; fullscreen; picture-in-picture"
-              allowfullscreen
-              title="${esc(race.name)} race footage"
-            ></iframe>
-          </div>
-          <div class="dm-player-footer">
-            <span class="dm-footer-label">🔍 Searching for: "${esc(race.videoSearch||race.name)}"</span>
-            <a class="btn btn-ghost btn-sm" href="https://www.dailymotion.com/search/${encodeURIComponent(race.videoSearch||race.name+' full race')}" target="_blank" rel="noopener">Open in Dailymotion ↗</a>
-          </div>
-        </div>
+        ${buildVideoPanel(race)}
       </div>
     </div>`;
   }
@@ -1222,24 +1287,7 @@ function pageChallenge(){
         </div>
       </div>
       <div class="rr-standings" id="rr-standings"></div>
-      <div class="dm-player-wrap" id="rr-dm-player" style="display:none;margin-top:18px">
-        <div class="dm-player-header">
-          <span class="dm-player-header-title">📺 Real Race Footage</span>
-          <span class="dm-player-header-note">Dailymotion · best match</span>
-        </div>
-        <div class="dm-player-screen">
-          <iframe
-            src="https://www.dailymotion.com/embed/search/${encodeURIComponent(race.videoSearch||race.name+' horse race full replay')}?autoplay=0"
-            allow="autoplay; fullscreen; picture-in-picture"
-            allowfullscreen
-            title="${esc(race.name)} race footage"
-          ></iframe>
-        </div>
-        <div class="dm-player-footer">
-          <span class="dm-footer-label">🔍 "${esc(race.videoSearch||race.name)}"</span>
-          <a class="btn btn-ghost btn-sm" href="https://www.dailymotion.com/search/${encodeURIComponent(race.videoSearch||race.name+' full race')}" target="_blank" rel="noopener">Open Dailymotion ↗</a>
-        </div>
-      </div>
+      <div id="rr-dm-player" style="display:none;margin-top:18px">${buildVideoPanel(race)}</div>
       <div class="rr-cta" id="rr-cta">
         <button class="btn btn-gold btn-lg" data-action="playAgain">🐎 Play Another Race</button>
       </div>
