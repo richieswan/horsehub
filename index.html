@@ -230,17 +230,30 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 .plc-jock{color:var(--t3);font-size:11px}
 .plc-odds{color:var(--t3);font-size:11px;min-width:44px;text-align:right}
 .plc-footer{display:flex;gap:22px;padding:13px 19px;font-family:var(--fs);font-size:12px;color:var(--t2);border-top:1px solid var(--bdr)}
-.video-card{border-radius:var(--r3);overflow:hidden;background:var(--bg3);border:1px solid var(--bdr)}
-.video-card-inner{position:relative;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:36px 24px;text-align:center;background:linear-gradient(135deg,var(--bg4),var(--bg3));border-bottom:1px solid var(--bdr)}
-.video-card-inner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(240,192,64,.07),transparent 65%);pointer-events:none}
-.video-thumb-ring{width:88px;height:88px;border-radius:50%;background:rgba(240,192,64,.1);border:2px solid rgba(240,192,64,.3);display:flex;align-items:center;justify-content:center;font-size:36px;position:relative;flex-shrink:0}
-.video-thumb-ring::after{content:'▶';position:absolute;font-size:20px;color:var(--gold)}
-.video-thumb-ring span{opacity:0}
-.video-card-title{font-family:var(--ff);font-size:18px;color:var(--t1);margin-bottom:4px}
-.video-card-sub{font-family:var(--fs);font-size:13px;color:var(--t2);margin-bottom:0}
-.video-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.video-card-footer{padding:13px 20px;display:flex;align-items:center;gap:10px;font-family:var(--fs);font-size:11px;color:var(--t3)}
-.video-card-footer span{flex:1}
+/* ── Video Player ────────────────────────────── */
+.vp-wrap{border-radius:var(--r3);overflow:hidden;background:var(--bg3);border:1px solid rgba(240,192,64,.22)}
+.vp-thumb{position:relative;aspect-ratio:16/9;background:#000;cursor:pointer;overflow:hidden;display:block}
+.vp-thumb-img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(.72);transition:filter .3s}
+.vp-thumb:hover .vp-thumb-img{filter:brightness(.55)}
+.vp-thumb-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:72px;opacity:.25;background:linear-gradient(135deg,var(--bg4),var(--bg3))}
+.vp-play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:76px;background:rgba(240,192,64,.92);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:var(--tr);box-shadow:0 4px 24px rgba(0,0,0,.5)}
+.vp-play-btn::after{content:'';border-style:solid;border-width:14px 0 14px 26px;border-color:transparent transparent transparent #0a0800;margin-left:5px}
+.vp-thumb:hover .vp-play-btn{background:var(--gold);transform:translate(-50%,-50%) scale(1.12);box-shadow:0 6px 32px rgba(240,192,64,.4)}
+.vp-thumb-label{position:absolute;bottom:0;left:0;right:0;padding:14px 18px 14px;background:linear-gradient(transparent,rgba(0,0,0,.85));font-family:var(--fs);font-size:14px;font-weight:700;color:#fff;letter-spacing:.03em}
+.vp-thumb-sublabel{font-size:11px;font-weight:400;opacity:.75;margin-top:2px}
+.vp-player{display:none;aspect-ratio:16/9;background:#000}
+.vp-player iframe{width:100%;height:100%;border:none;display:block}
+.vp-error{display:none;padding:34px 24px;text-align:center;background:linear-gradient(135deg,rgba(239,68,68,.05),var(--bg3))}
+.vp-error-icon{font-size:38px;margin-bottom:12px}
+.vp-error-title{font-family:var(--ff);font-size:18px;color:var(--t1);margin-bottom:7px}
+.vp-error-sub{font-family:var(--fs);font-size:13px;color:var(--t2);margin-bottom:18px;line-height:1.6}
+.vp-error-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.vp-no-id{aspect-ratio:16/9;background:linear-gradient(135deg,var(--bg4),var(--bg3));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-family:var(--fs);color:var(--t3)}
+.vp-no-id-icon{font-size:52px;opacity:.35}
+.vp-no-id-text{font-size:14px}
+.vp-footer{padding:13px 18px;display:flex;gap:9px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--bdr);background:rgba(255,255,255,.015)}
+.vp-footer-label{font-family:var(--fs);font-size:12px;color:var(--t3);flex:1;min-width:120px}
+.vp-loading{aspect-ratio:16/9;background:#000;display:flex;align-items:center;justify-content:center;font-family:var(--fs);font-size:14px;color:var(--t3);gap:12px}
 
 /* ── Stable ──────────────────────────────────── */
 .tabs{display:flex;gap:5px;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r3);padding:5px;margin-bottom:24px}
@@ -419,7 +432,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
    ════════════════════════════════════════════════ */
 const RACES = [
   {id:'r01',name:'2015 Belmont Stakes',track:'Belmont Park, New York',distance:'1.5 miles (12f)',surface:'Dirt',condition:'Fast',date:'June 6, 2015',country:'USA',grade:'Grade I',purse:'$1,500,000',
-   videoSearch:'2015 Belmont Stakes American Pharoah Triple Crown full race',
+   videoId:'dBsv2BmFiuA',videoStart:180,videoSearch:'2015 Belmont Stakes American Pharoah Triple Crown full race',
    difficulty:'easy',winner:'h01_1',
    description:'The 147th running — American Pharoah bids to end a 37-year Triple Crown drought.',
    result:{positions:['h01_1','h01_4','h01_3','h01_2'],winTime:'2:26.65',margin:'5½ lengths'},
@@ -430,7 +443,7 @@ const RACES = [
     {id:'h01_4',name:'Tonalist',number:8,jockey:'John Velazquez',trainer:'Christophe Clement',odds:'15/1',oddsN:16,color:'#2a5298',form:['1st','3rd','2nd','4th','2nd'],weight:'126 lbs',age:4,stats:{speed:85,stamina:90,acceleration:80,luck:78}}
   ]},
   {id:'r02',name:'2018 Cox Plate',track:'Moonee Valley, Melbourne',distance:'2040m',surface:'Turf',condition:'Good',date:'October 27, 2018',country:'Australia',grade:'Group 1',purse:'$3,000,000',
-   videoSearch:'Winx 2018 Cox Plate fourth consecutive full race',
+   videoId:'GWpPdEnlFok',videoStart:120,videoSearch:'Winx 2018 Cox Plate fourth consecutive full race',
    difficulty:'easy',winner:'h02_1',
    description:'The great mare Winx goes for her 4th consecutive Cox Plate, chasing immortality.',
    result:{positions:['h02_1','h02_2','h02_3','h02_4'],winTime:'2:04.04',margin:'4 lengths'},
@@ -441,7 +454,7 @@ const RACES = [
     {id:'h02_4',name:'Brutal',number:9,jockey:'Blake Shinn',trainer:'Mark Newnham',odds:'40/1',oddsN:41,color:'#be123c',form:['3rd','4th','2nd','5th','3rd'],weight:'55.5 kg',age:5,stats:{speed:83,stamina:85,acceleration:82,luck:75}}
   ]},
   {id:'r03',name:'2019 Melbourne Cup',track:'Flemington, Melbourne',distance:'3200m',surface:'Turf',condition:'Good',date:'November 5, 2019',country:'Australia',grade:'Group 1',purse:'$7,750,000',
-   videoSearch:'2019 Melbourne Cup Vow And Declare full race',
+   videoId:'DP3y9HXx7T8',videoStart:200,videoSearch:'2019 Melbourne Cup Vow And Declare full race',
    difficulty:'hard',winner:'h03_1',
    description:'The race that stops a nation — 24 runners battle over 3200 metres.',
    result:{positions:['h03_1','h03_2','h03_3','h03_4','h03_5'],winTime:'3:17.30',margin:'½ length'},
@@ -453,7 +466,7 @@ const RACES = [
     {id:'h03_5',name:'Finche',number:8,jockey:'Ben Melham',trainer:'Chris Waller',odds:'20/1',oddsN:21,color:'#334155',form:['3rd','5th','2nd','6th','2nd'],weight:'56.5 kg',age:7,stats:{speed:84,stamina:92,acceleration:80,luck:77}}
   ]},
   {id:'r04',name:'2021 The Everest',track:'Royal Randwick, Sydney',distance:'1200m',surface:'Turf',condition:'Good to Firm',date:'October 16, 2021',country:'Australia',grade:'Listed',purse:'$15,000,000',
-   videoSearch:'2021 The Everest Nature Strip full race Royal Randwick',
+   videoId:'ZtLpKUCZEXg',videoStart:60,videoSearch:'2021 The Everest Nature Strip full race Royal Randwick',
    difficulty:'hard',winner:'h04_1',
    description:"World's richest turf race per runner — 12 elite sprinters at $1.25M per slot.",
    result:{positions:['h04_1','h04_2','h04_3','h04_4'],winTime:'1:09.27',margin:'Short ½ head'},
@@ -464,7 +477,7 @@ const RACES = [
     {id:'h04_4',name:'Masked Crusader',number:4,jockey:'Kerrin McEvoy',trainer:'Chris Waller',odds:'8/1',oddsN:9,color:'#9333ea',form:['2nd','1st','3rd','2nd','1st'],weight:'57 kg',age:5,stats:{speed:93,stamina:80,acceleration:91,luck:85}}
   ]},
   {id:'r05',name:'2019 Kentucky Derby',track:'Churchill Downs, Louisville',distance:'1¼ miles (10f)',surface:'Dirt',condition:'Sloppy',date:'May 4, 2019',country:'USA',grade:'Grade I',purse:'$3,000,000',
-   videoSearch:'2019 Kentucky Derby Country House disqualification full race',
+   videoId:'QxQHYqJmFBI',videoStart:120,videoSearch:'2019 Kentucky Derby Country House disqualification full race',
    difficulty:'hard',winner:'h05_1',
    description:'One of the most controversial Derbies ever — the apparent winner was disqualified!',
    result:{positions:['h05_1','h05_3','h05_4','h05_2'],winTime:'2:03.93',margin:'¾ length (after DQ)'},
@@ -475,7 +488,7 @@ const RACES = [
     {id:'h05_4',name:'Tacitus',number:10,jockey:'Jose Ortiz',trainer:'Bill Mott',odds:'8/1',oddsN:9,color:'#5b21b6',form:['1st','1st','2nd','2nd','1st'],weight:'126 lbs',age:3,stats:{speed:91,stamina:88,acceleration:89,luck:86}}
   ]},
   {id:'r06',name:'2020 Prix de l\'Arc de Triomphe',track:'ParisLongchamp, France',distance:'2400m',surface:'Turf',condition:'Very Soft',date:'October 4, 2020',country:'France',grade:'Group 1',purse:'€5,000,000',
-   videoSearch:'2020 Prix Arc de Triomphe Sottsass full race',
+   videoId:'lpVzRyHwZYk',videoStart:150,videoSearch:'2020 Prix Arc de Triomphe Sottsass full race',
    difficulty:'hard',winner:'h06_1',
    description:'Enable seeks an unprecedented third Arc — can she overcome the heavy ground?',
    result:{positions:['h06_1','h06_2','h06_3','h06_4'],winTime:'2:36.44',margin:'Short ½ head'},
@@ -486,7 +499,7 @@ const RACES = [
     {id:'h06_4',name:'Stradivarius',number:9,jockey:'Frankie Dettori',trainer:'John Gosden',odds:'12/1',oddsN:13,color:'#1c4532',form:['1st','1st','2nd','1st','3rd'],weight:'60 kg',age:6,stats:{speed:88,stamina:97,acceleration:85,luck:88}}
   ]},
   {id:'r07',name:'2017 Cheltenham Gold Cup',track:'Cheltenham, UK',distance:'3m 2½f',surface:'Turf (Jumps)',condition:'Soft',date:'March 17, 2017',country:'UK',grade:'Grade 1',purse:'£625,000',
-   videoSearch:'2017 Cheltenham Gold Cup Sizing John full race',
+   videoId:'KnvqkR7BVJA',videoStart:300,videoSearch:'2017 Cheltenham Gold Cup Sizing John full race',
    difficulty:'hard',winner:'h07_1',
    description:"Jump racing's greatest prize — five elite chasers battle over 26 fences.",
    result:{positions:['h07_1','h07_2','h07_3','h07_4','h07_5'],winTime:'6:35.90',margin:'1¼ lengths'},
@@ -555,6 +568,7 @@ let G = {
   stableTab: 0,
   breedPick1: null, breedPick2: null, breedResult: null,
   challengePhase: 'pick', challengeSelected: null, challengeResult: null,
+  currentVideoRaceId: null, currentVideoId: null,
   simPhase: 'select', simSelected: [], simData: null, simFrame: 0, simTimer: null,
   lbSort: 'coins',
 };
@@ -1060,20 +1074,38 @@ function pageChallenge(){
         ${race.result.positions.map((hid,i)=>{const h=race.horses.find(x=>x.id===hid);if(!h)return'';const labels=['1st 🥇','2nd 🥈','3rd 🥉'];return`<div class="plc-row"><span class="plc-pos">${labels[i]||i+1+'th'}</span><span class="plc-name">${esc(h.name)}</span><span class="plc-jock">🏇 ${esc(h.jockey)}</span><span class="plc-odds">${esc(h.odds)}</span></div>`;}).join('')}
         ${race.result.winTime||race.result.margin?`<div class="plc-footer">${race.result.winTime?`<span>⏱ ${race.result.winTime}</span>`:''}${race.result.margin?`<span>📏 ${race.result.margin}</span>`:''}</div>`:''}
       </div>`:''}
-      <div class="video-card card-hi">
-        <div class="video-card-inner">
-          <div class="video-thumb-ring"><span>🎬</span></div>
-          <div>
-            <div class="video-card-title">📺 Watch the Full Race</div>
-            <div class="video-card-sub">${esc(race.name)} — ${esc(race.date)}</div>
-          </div>
-          <div class="video-btns">
-            <a class="btn btn-gold btn-lg" href="https://www.youtube.com/results?search_query=${encodeURIComponent(race.videoSearch||race.name+' full race')}" target="_blank" rel="noopener">▶ Find on YouTube</a>
-            <a class="btn btn-outline" href="https://www.youtube.com/results?search_query=${encodeURIComponent(race.name+' highlights')}" target="_blank" rel="noopener">✂️ Highlights</a>
+      <div class="vp-wrap" id="vp-${race.id}">
+        ${race.videoId ? `
+        <div class="vp-thumb" id="vp-thumb-${race.id}" data-action="playVideo" data-vid="${race.videoId}" data-start="${race.videoStart||0}" data-race="${race.id}">
+          <img class="vp-thumb-img"
+            src="https://img.youtube.com/vi/${race.videoId}/maxresdefault.jpg"
+            onerror="this.style.opacity='0'"
+            alt="${esc(race.name)}">
+          <div class="vp-thumb-fallback">🏇</div>
+          <div class="vp-play-btn"></div>
+          <div class="vp-thumb-label">
+            📺 ${esc(race.name)}
+            <div class="vp-thumb-sublabel">Click to play full race</div>
           </div>
         </div>
-        <div class="video-card-footer">
-          <span>🔍 Opens a YouTube search for this exact race — pick the best result!</span>
+        <div class="vp-player" id="vp-player-${race.id}"></div>
+        <div class="vp-error" id="vp-error-${race.id}">
+          <div class="vp-error-icon">🔒</div>
+          <div class="vp-error-title">Embedding disabled</div>
+          <div class="vp-error-sub">The video owner has turned off playback outside YouTube.<br>Watch it directly — it's one click away:</div>
+          <div class="vp-error-btns">
+            <a class="btn btn-gold btn-lg" href="https://www.youtube.com/watch?v=${race.videoId}&t=${race.videoStart||0}" target="_blank" rel="noopener">▶ Watch on YouTube</a>
+            <a class="btn btn-outline" href="https://archive.org/search?query=${encodeURIComponent(race.name+' horse race')}" target="_blank" rel="noopener">📼 Archive.org</a>
+          </div>
+        </div>` : `
+        <div class="vp-no-id">
+          <div class="vp-no-id-icon">🎬</div>
+          <div class="vp-no-id-text">No video on file — search below</div>
+        </div>`}
+        <div class="vp-footer">
+          <span class="vp-footer-label">📺 ${esc(race.name)} · ${esc(race.date)}</span>
+          <a class="btn btn-ghost btn-sm" href="https://www.youtube.com/results?search_query=${encodeURIComponent(race.videoSearch||race.name+' full race')}" target="_blank" rel="noopener">🔍 YT Search</a>
+          <a class="btn btn-ghost btn-sm" href="https://archive.org/search?query=${encodeURIComponent(race.name+' horse race')}" target="_blank" rel="noopener">📼 Archive</a>
         </div>
       </div>
     </div>
@@ -1404,6 +1436,24 @@ document.addEventListener('click',e=>{
     return;
   }
 
+  if(action==='playVideo'){
+    const vid=el.dataset.vid;
+    const start=el.dataset.start||0;
+    const raceId=el.dataset.race;
+    const thumbEl=document.getElementById('vp-thumb-'+raceId);
+    const playerEl=document.getElementById('vp-player-'+raceId);
+    if(!thumbEl||!playerEl) return;
+    G.currentVideoRaceId=raceId;
+    G.currentVideoId=vid;
+    thumbEl.style.display='none';
+    playerEl.style.display='block';
+    playerEl.innerHTML=`<iframe
+      src="https://www.youtube.com/embed/${vid}?autoplay=1&start=${start}&rel=0&enablejsapi=1"
+      allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+      allowfullscreen></iframe>`;
+    return;
+  }
+
   if(action==='upgrade'){
     upgradeHorse(el.dataset.horse, el.dataset.stat);
     return;
@@ -1481,6 +1531,64 @@ document.addEventListener('keydown',e=>{
     }
   }
 });
+
+/* ════════════════════════════════════════════════
+   YOUTUBE ERROR DETECTION
+   YouTube sends postMessage when embed is blocked.
+   We catch it and swap to the fallback card.
+   ════════════════════════════════════════════════ */
+window.addEventListener('message', e => {
+  if (!e.data) return;
+  try {
+    const d = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+    // YouTube IFrame API error events
+    // Code 150/101 = embedding disabled by owner
+    // Code 100     = video not found / removed
+    // Code 2       = invalid video ID
+    if (d.event === 'onError') {
+      showVideoError(G.currentVideoRaceId, G.currentVideoId, d.info);
+    }
+    // Also catch the infoDelivery event with playerState=-1 (unstarted after load = blocked)
+    if (d.event === 'infoDelivery' && d.info && d.info.playerState === -1) {
+      // Give it 3 seconds to start — if still -1 something is wrong
+      setTimeout(() => {
+        const pe = document.getElementById('vp-player-' + G.currentVideoRaceId);
+        if (pe && pe.style.display !== 'none') {
+          // Check if we have an iframe that is still loading with -1
+          showVideoError(G.currentVideoRaceId, G.currentVideoId, 150);
+        }
+      }, 4000);
+    }
+  } catch(ex) {}
+});
+
+function showVideoError(raceId, videoId, errorCode) {
+  if (!raceId) return;
+  const pe = document.getElementById('vp-player-' + raceId);
+  const ee = document.getElementById('vp-error-' + raceId);
+  if (pe) pe.style.display = 'none';
+  if (ee) {
+    ee.style.display = 'block';
+    const race = RACES.find(r => r.id === raceId);
+    const searchQ = encodeURIComponent(race ? (race.videoSearch || race.name + ' full race') : 'horse race');
+    const archiveQ = encodeURIComponent(race ? race.name + ' horse race' : 'horse race');
+    const msgs = {
+      150: 'The video owner has disabled playback outside YouTube.',
+      101: 'The video owner has disabled playback outside YouTube.',
+      100: 'This video is no longer available on YouTube.',
+      2:   'This video ID is invalid or the video was removed.',
+    };
+    ee.innerHTML = `
+      <div class="vp-error-icon">🔒</div>
+      <div class="vp-error-title">${errorCode === 100 || errorCode === 2 ? 'Video unavailable' : 'Embedding disabled'}</div>
+      <div class="vp-error-sub">${msgs[errorCode] || 'This video cannot be played here.'}<br>You can still watch it directly:</div>
+      <div class="vp-error-btns">
+        ${videoId ? `<a class="btn btn-gold btn-lg" href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener">▶ Watch on YouTube</a>` : ''}
+        <a class="btn btn-outline" href="https://www.youtube.com/results?search_query=${searchQ}" target="_blank" rel="noopener">🔍 Search YouTube</a>
+        <a class="btn btn-ghost" href="https://archive.org/search?query=${archiveQ}" target="_blank" rel="noopener">📼 Archive.org</a>
+      </div>`;
+  }
+}
 
 /* ════════════════════════════════════════════════
    INIT
